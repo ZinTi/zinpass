@@ -1,0 +1,100 @@
+syntax = "proto3"; // 指定 protobuf 语法版本
+
+package user.v1; // 定义包名，与代码结构对应
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "common/v1/common.proto"; // 导入公共定义（分页、错误等）
+
+// 用户服务定义
+service UserService {
+    // 创建用户
+    rpc CreateUser(CreateUserReq) returns (CreateUserResp);
+
+    // 获取用户列表（带分页）
+    rpc ListUsers(ListUsersReq) returns (ListUsersResp);
+
+    // 更新用户信息
+    rpc UpdateUser(UpdateUserReq) returns (UpdateUserResp);
+
+    // 删除用户
+    rpc DeleteUser(DeleteUserReq) returns (google.protobuf.Empty);
+}
+
+// 用户角色枚举
+enum UserRole {
+    ROLE_UNSPECIFIED = 0; // 明确保留 0 值
+    ROLE_USER = 1;
+    ROLE_ADMIN = 2;
+    ROLE_EDITOR = 3;
+}
+
+// 用户状态枚举
+enum UserStatus {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_ACTIVE = 1;
+    STATUS_INACTIVE = 2;
+    STATUS_SUSPENDED = 3;
+}
+
+// 用户核心信息
+message User {
+    // 字段标签遵循 1-15 高频优先
+    string id = 1;          // 用户主键ID
+    string username = 2;    // 用户名
+    string email = 3;       // 邮箱
+
+    // 16 以后用于低频字段
+    UserRole role = 16;
+    UserStatus status = 17;
+    google.protobuf.Timestamp create_time = 18; // 使用标准时间类型
+
+    // 保留字段标签和名称
+    reserved 4 to 15;       // 旧版字段占用的标签范围
+    reserved "deleted";     // 已删除字段名
+}
+
+// 创建用户请求
+message CreateUserReq {
+    string username = 1;
+    string email = 2;
+    string password = 3;  // 实际项目应加密处理
+    UserRole role = 4;
+  }
+  
+  // 创建用户响应
+  message CreateUserResp {
+    User user = 1;                   // 创建成功的用户对象
+    common.v1.Error error = 2;       // 错误信息（可选）
+  }
+  
+  // 用户列表请求（带分页）
+  message ListUsersReq {
+    common.v1.Pagination pagination = 1;  // 分页参数
+    UserRole filter_role = 2;             // 可选过滤条件
+  }
+  
+  // 用户列表响应
+  message ListUsersResp {
+    repeated User users = 1;              // 用户列表
+    common.v1.Pagination pagination = 2;  // 分页元数据
+  }
+  
+  // 更新用户请求
+  message UpdateUserReq {
+    string user_id = 1;       // 要更新的用户ID
+    string new_email = 2;     // 新邮箱（可选）
+    UserStatus new_status = 3; // 新状态（可选）
+  }
+  
+  // 更新用户响应
+  message UpdateUserResp {
+    User updated_user = 1;    // 更新后的用户对象
+  }
+  
+  // 删除用户请求
+  message DeleteUserReq {
+    string user_id = 1;
+  }
+  
+  // 可选的空响应（直接使用 google.protobuf.Empty）

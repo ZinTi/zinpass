@@ -1,0 +1,37 @@
+# gitignore file for ZinPass project
+
+# 忽略以下三个目录及其目录下的所有子目录和文件
+# /client_desktop/auto_generated/**
+# /control/auto_generated/**
+# /service/auto_generated/**
+
+# 忽略所有目录
+build/
+auto_generated/
+
+# 忽略以下测试文件
+data/zinpass.db
+data/zinpass.db.backup
+data/test.db
+data/test.db.backup
+
+# 忽略以下扩展名的文件
+*.o
+*.obj
+*.tmp
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.tar.gz
+*.zip
+*.7z
+*.db
+
+# 编辑器/IDE 文件
+.idea/
+.vscode/
+*.swp
+
+

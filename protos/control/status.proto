@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package control;
+
+service StatusService{
+    rpc GetVersion(GetStatusCommonReq) returns (GetVersionRes);
+    rpc GetVersionBuildInfo(GetStatusCommonReq) returns (GetVersionBuildInfoRes);
+    rpc GetCopyleft(GetStatusCommonReq) returns (GetCopyleftRes);
+    // 获取后台服务/守护进程程序在服务器上的路径（模块路径，不是工作路径）
+    rpc GetExecutablePath(GetStatusCommonReq) returns (GetExecutablePathRes);
+    rpc GetDatabasePath(GetStatusCommonReq) returns (GetDatabasePathRes);
+
+    rpc Shutdown(ShutdownReq) returns (ShutdownRes);
+    rpc Restart(RestartReq) returns (RestartRes);
+}
+
+message GetStatusCommonReq{
+    string key = 1;
+}
+
+message GetVersionRes{
+    string version = 1;
+}
+
+message GetVersionBuildInfoRes{
+    string info = 1;
+}
+
+message GetCopyleftRes{
+    string copyleft = 1;
+}
+
+message GetExecutablePathRes{
+    string path = 1;
+}
+
+message GetDatabasePathRes{
+    string path = 1;
+}
+
+message ShutdownReq{
+    string key = 1;
+    // datetime = 2;时间
+}
+
+message ShutdownRes{
+    bool result = 1;
+    string message = 2;
+}
+
+message RestartReq{
+    string key = 1;
+}
+
+message RestartRes{
+    bool result = 1;
+    string message = 2;
+}

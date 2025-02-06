@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package account.v1;
+
+service CategoryService {
+    rpc CreateCategory(CreateCategoryReq) returns (CreateCategoryResp);
+    rpc ListNameOfCategories(ListNameOfCategoriesReq) returns (ListNameOfCategoriesResp);
+    rpc ListCategories(ListCategoriesReq) returns (ListCategoriesResp);
+    rpc UpdateCategories(UpdateCategoriesReq) returns (UpdateCategoriesResp);
+    rpc DeleteCategories(DeleteCategoriesReq) returns (DeleteCategoriesResp);
+}
+
+message CreateCategoryReq{
+
+}
+message CreateCategoryResp{
+
+}
+message ListNameOfCategoriesReq{
+    string session_id = 1;
+}
+message ListNameOfCategoriesResp{
+    repeated string categories = 1;
+    string message = 2;
+}
+message ListCategoriesReq{
+
+}
+message ListCategoriesResp{
+
+}
+message UpdateCategoriesReq{
+
+}
+message UpdateCategoriesResp{
+
+}
+message DeleteCategoriesReq{
+
+}
+message DeleteCategoriesResp{
+
+}

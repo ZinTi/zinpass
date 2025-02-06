@@ -1,0 +1,42 @@
+一、依赖版本
+开发和测试时使用的版本
+1. CMake: cmake version 3.31.0
+2. MinGW-w64: gcc version 14.2.0 (x86_64-posix-seh-rev2, Built by MinGW-Builds project)
+3. ninja 1.12.1
+4. Qt 6.9 (使用mingw-w64编译后的Release静态库)
+5. SQLite 3.50.0 (使用mingw-w64编译后的Release静态库)
+6. OpenSSL 3.5.0 (使用gRPC内置的静态库)
+7. gRPC 1.71.0 (使用mingw-w64编译后的Release静态库，包含libprotoc 29.0)
+8. Boost 1.88.0 
+9. C++17 标准
+
+桌面环境
+Windows 11 专业工作站版 amd64
+
+二、构建编译
+步骤
+1、编译zinpass/protos/目录下的proto文件
+zinpass/scripts/protoc.py 是一个示例脚本，请根据实际的目录结构进行更改
+
+2、编译 ZinPassSvc (Linux版本名称为 zinpassd)
+zinpass/service/CMakeLists.txt 是一个示例CMake脚本，请根据实际的目录结构进行更改
+
+3、编译 zinpassctl
+zinpass/control/CMakeLists.txt 是一个示例CMake脚本，请根据实际的目录结构进行更改
+
+4、编译桌面客户端
+zinpass/client-desktop/CMakeLists.txt 是一个示例CMake脚本，请根据实际的目录结构进行更改
+
+三、运行
+（3.1）使用步骤
+1、编辑 bin/zinpass.config 文件，修改其中的数据库文件路径为你的实际数据库文件完整路径
+
+2、启动服务器，即 bin/ZinPassSvc.exe 或 bin/zinpassd
+
+3、启动客户端，即 bin/client-desktop.exe
+
+（3.2）监控服务
+启动 bin/zinpassctl 可用于与 ZinPassSvc/zinpassd 交互
+
+四、其他注意事项
+无。

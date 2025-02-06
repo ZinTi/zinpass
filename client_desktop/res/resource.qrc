@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file>pixels.ico</file>
+        <file>mascot.png</file>
+        <file>spider_128.png</file>
+        <file>spider_400.png</file>
+        <file>svg/gear_setting.svg</file>
+    </qresource>
+    <qresource prefix="/btn">
+        <file>btn/account.png</file>
+        <file>btn/analytics.png</file>
+        <file>btn/bus.png</file>
+        <file>btn/couple.png</file>
+        <file>btn/down.png</file>
+        <file>btn/focus.png</file>
+        <file>btn/gear.png</file>
+        <file>btn/hidden.png</file>
+        <file>btn/phone.png</file>
+        <file>btn/preferences.png</file>
+        <file>btn/search.png</file>
+        <file>btn/up.png</file>
+        <file>btn/write.png</file>
+    </qresource>
+    <qresource prefix="/fonts">
+        <file>fonts/JetBrainsMonoNL-Italic.ttf</file>
+        <file>fonts/JetBrainsMonoNL-Regular.ttf</file>
+    </qresource>
+</RCC>

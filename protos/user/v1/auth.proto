@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package user.v1;
+
+//import "common/v1/common.proto";
+
+service AuthService {
+    rpc AuthUser(AuthUserReq) returns (AuthUserResp);                       // 验证身份
+    rpc CreateSession(CreateSessionReq) returns (CreateSessionResp);        // 创建会话（登录）
+    rpc UpdateSession(UpdateSessionReq) returns (UpdateSessionResp);        // 更新会话
+    rpc DeleteSession(DeleteSessionReq) returns (DeleteSessionResp);        // 删除会话（登出）
+}
+
+message AuthUserReq {
+
+}
+
+message AuthUserResp {
+
+}
+
+message CreateSessionReq {
+    string username = 1;
+    string main_key = 2;
+    string captcha_input = 3;
+}
+
+message CreateSessionResp {
+    string session_id = 1;
+    string user_id = 2;
+    string username = 3;
+    string nickname = 4;
+
+    string message = 16;
+}
+
+message UpdateSessionReq {
+
+}
+
+message UpdateSessionResp {
+
+}
+
+message DeleteSessionReq {
+    string session_id = 1;
+}
+
+message DeleteSessionResp {
+    string message = 1;
+}

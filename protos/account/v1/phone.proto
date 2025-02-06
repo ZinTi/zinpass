@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package account.v1;
+
+service PhoneService {
+    rpc CreatePhone(CreatePhoneReq) returns (CreatePhoneResp);
+    rpc ListPhoneNumbers(ListPhoneNumbersReq) returns (ListPhoneNumbersResp);
+    rpc ListPhone(ListPhoneReq) returns (ListPhoneResp);
+    rpc FindPhoneById(FindPhoneByIdReq) returns (FindPhoneByIdResp);
+    rpc GetReferenceCount(GetReferenceCountReq) returns (GetReferenceCountResp); // 获取子表引用记录数，用于删除时判断是否有其他记录依赖本条记录，返回值中包含 reference_count
+    rpc UpdatePhone(UpdatePhoneReq) returns (UpdatePhoneResp);
+    rpc DeletePhone(DeletePhoneReq) returns (DeletePhoneResp);
+}
+
+message Phone{
+    int32 phone_id = 1;
+    string phone_number = 2;
+    string telecom_operator = 3;
+    string service_pwd = 4;
+    string pin = 5;
+    string puk = 6;
+    string join_time = 7;
+    string phone_area = 8;
+    string postscript = 9;
+    string sys_user_id = 10;
+    string created_time = 11;
+    string updated_time = 12;
+}
+
+message CreatePhoneReq{
+    string session_id = 1;
+    Phone phone = 2;    // 新账号信息
+}
+
+message CreatePhoneResp{
+    bool result = 1;
+    string message = 2;
+}
+
+message ListPhoneNumbersReq{
+    string session_id = 1;
+}
+
+message ListPhoneNumbersResp{
+    repeated string phone_numbers = 1;
+    string message = 2;
+}
+
+message ListPhoneReq{
+    string session_id = 1;
+    string telecom = 2;         // 筛选条件1
+    string phone_number = 3;    // 筛选条件2
+}
+
+message ListPhoneResp{
+    repeated Phone phone_numbers = 1;
+    string message = 2;
+}
+
+message FindPhoneByIdReq{
+    string session_id = 1;
+    int32 phone_id = 2;
+}
+
+message FindPhoneByIdResp{
+    Phone phone_number = 1;
+    string message = 2;
+}
+
+message GetReferenceCountReq{
+    string session_id = 1;
+    int32 id = 2;
+}
+
+message GetReferenceCountResp{
+    int32 reference_count = 1; // 子表引用记录数
+}
+
+message UpdatePhoneReq{
+    string session_id = 1;
+    int32 phone_id = 2;
+    Phone phone = 3;
+}
+
+message UpdatePhoneResp{
+    bool result = 1;
+    string message = 2;
+}
+
+message DeletePhoneReq{
+    string session_id = 1;
+    int32 phone_id = 2;
+    int32 mode = 3; // 删除模式：0 ~ 4
+    int32 replace_phone_id = 4; // 被替换的手机号ID （仅当 mode = 1 时有效）
+}
+
+message DeletePhoneResp{
+    bool result = 1;
+    string message = 2;
+    int32 reference_count = 3; // 子表引用记录数
+}

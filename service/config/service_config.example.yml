@@ -1,0 +1,26 @@
+# service_config.yml - 服务端的配置文件
+
+# 监听客户端
+client:
+  ipv4: "0.0.0.0"
+  port: 50051
+
+# 监听命令行工具
+cli:
+  ipv4: "127.0.0.1"
+  port: 50052
+
+# 会话
+session:
+  timeout: 3600
+
+# 数据库配置
+database:
+  path: "../data/zinpass.db"
+  backup: "../data/zinpass.bak.db"
+
+# 日志配置
+log:
+  path: "../data/zinpassd.log"
+  cleanup_interval: 604800
+  max_size: 10485760

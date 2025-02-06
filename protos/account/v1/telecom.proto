@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package account.v1;
+
+service TelecomService{
+    rpc ListTelecomOperator(ListTelecomOperatorReq) returns (ListTelecomOperatorResp);
+}
+
+message ListTelecomOperatorReq{
+    string session_id = 1;
+}
+
+message ListTelecomOperatorResp{
+   repeated string telecoms = 1;
+   string message = 2;
+}
+

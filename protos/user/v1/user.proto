@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+package user.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+//import "common/v1/common.proto"; // 导入公共定义（分页、错误等）
+
+service UserService {
+    rpc GetUser(GetUserReq) returns (GetUserResp);                 // 获取用户信息
+    rpc CreateUser(CreateUserReq) returns (CreateUserResp);         // 创建用户
+    rpc ListUsernames(ListUsernamesReq) returns (ListUsernamesResp);// 列出所有username
+    rpc ListUsers(ListUsersReq) returns (ListUsersResp);            // 获取用户列表（带分页）
+    rpc UpdateUser(UpdateUserReq) returns (UpdateUserResp);         // 更新用户信息
+    rpc UpdateMainKey(UpdateMainKeyReq) returns (UpdateMainKeyResp); // 更新用户密码
+    rpc DeleteUser(DeleteUserReq) returns (google.protobuf.Empty);      // 删除用户
+}
+
+// 用户角色枚举
+enum UserRole {
+    ROLE_UNSPECIFIED = 0; // 明确保留 0 值
+    ROLE_USER = 1;
+    ROLE_ADMIN = 2;
+    ROLE_EDITOR = 3;
+}
+
+// 用户状态枚举
+enum UserStatus {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_ACTIVE = 1;
+    STATUS_INACTIVE = 2;
+    STATUS_SUSPENDED = 3;
+}
+
+// 用户核心信息
+message User {
+    string user_id = 1;
+    string username = 2;
+    string nickname = 3;
+    string email = 4;
+    string telephone = 5;
+    string password = 6;
+
+    UserRole role = 16;
+    UserStatus status = 17;
+    google.protobuf.Timestamp create_time = 18; // 使用标准时间类型
+
+    reserved 7 to 15;       // 旧版字段占用的标签范围
+    reserved "deleted";     // 已删除字段名
+}
+
+message GetUserReq {
+    string session_id = 1;
+}
+
+message GetUserResp {
+    string message = 1;
+    string user_id = 2;
+    string username = 3;
+    string nickname = 4;
+    string created_time = 5;
+    string updated_time = 6;
+}
+
+message CreateUserReq {
+    string username = 1;
+    string password = 2;
+    string nickname = 3;
+
+    // UserRole role = 4;
+    // string email = 5;
+}
+
+message CreateUserResp {
+    string id = 1;           // user_id
+    string message = 2;
+    //User user = 1;
+    //common.v1.Error error = 15;       // 错误信息
+}
+
+
+// 用户名列表请求
+message ListUsernamesReq {
+    string message = 1;
+}
+
+// 用户名列表响应
+message ListUsernamesResp {
+    repeated string usernames = 1;     // 用户名列表
+    string message = 2;               // 反馈信息
+}
+
+// 用户列表请求（带分页）
+message ListUsersReq {
+    //common.v1.Pagination pagination = 1;  // 分页参数
+    UserRole filter_role = 2;             // 可选过滤条件
+}
+
+// 用户列表响应
+message ListUsersResp {
+    repeated User users = 1;              // 用户列表
+    //common.v1.Pagination pagination = 2;  // 分页元数据
+}
+
+message UpdateUserReq {
+    string session_id = 1;
+    string username = 2;      // 新用户名
+    string nickname = 3;      // 新昵称
+}
+
+message UpdateUserResp {
+    bool success = 1;       // 是否成功
+    string message = 2;     // 反馈信息
+}
+
+message UpdateMainKeyReq {
+    string session_id = 1;
+    string old_key = 2;
+    string new_key = 3;
+}
+
+message UpdateMainKeyResp {
+    bool success = 1;
+    string message = 2;
+    int32 total_count = 3;              // 应更新 account 记录数
+    int32 success_count = 4;            // 实际更新 account 记录数
+    repeated string failed_ids = 5;     // 失败的 account_id 列表
+}
+
+message DeleteUserReq {
+    string session_id = 1;
+}
+
+// 可选的空响应（直接使用 google.protobuf.Empty）

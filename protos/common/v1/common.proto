@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package common.v1;
+
+import "google/protobuf/struct.proto";  // 包含 Value、ListValue、Struct 等类型
+
+// 定义筛选条件结构
+message Filter {
+  LogicalOperator operator = 1;   // 逻辑运算符（AND/OR）
+  repeated Condition conditions = 2;  // 条件列表
+}
+
+// 单个条件
+message Condition {
+  string field = 1;   // 字段名
+  Operator op = 2;    // 操作符（如 “<=”）
+  google.protobuf.Value value = 3;    // 值
+}
+
+// 操作符枚举
+enum Operator {
+  OP_UNSPECIFIED = 0;
+  EQ = 1;    // = (Equal)
+  NEQ = 2;   // != (Not Equal)
+  GT = 3;    // > (Greater Than)
+  GTE = 4;   // >= (Greater Than or Equal)
+  LT = 5;    // < (Less Than)
+  LTE = 6;   // <= (Less Than or Equal)
+  IN = 7;    // 值在列表中 (In)
+  LIKE = 8;  // 模糊匹配 (Like)
+}
+
+enum LogicalOperator{
+  LOGICAL_OPERATOR_UNSPECIFIED = 0;
+  AND = 1;
+  OR = 2;
+}
+
+// 分页参数
+message Pagination {
+  int32 page = 1;      // 当前页码
+  int32 page_size = 2; // 每页数量
+  int64 total = 3;     // 总数
+}
+
+// 错误信息
+message Error {
+  string code = 1;     // 错误码（如 "INVALID_EMAIL"）
+  string message = 2;  // 用户可读描述
+}

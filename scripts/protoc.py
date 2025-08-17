@@ -11,8 +11,8 @@ GRPC_INSTALL_DIR = "A:/build/grpc-1.71.0-amd64-win-mingw64"
 
 protos_src_base_dir = PROJECT_ROOT + "/protos"
 target_dir_service = PROJECT_ROOT + "/service/auto_generated"                 # 后台服务/守护进程目标目录
-target_dir_control = PROJECT_ROOT + "/control/generate"                 # 管理控制客户端目标目录
-target_dir_client = PROJECT_ROOT + "/client_desktop/generate/grpc"      # 桌面客户端目标目录
+target_dir_control = PROJECT_ROOT + "/control/auto_generated"                 # 管理控制客户端目标目录
+target_dir_client = PROJECT_ROOT + "/client_desktop/auto_generated/grpc"      # 桌面客户端目标目录
 # 若目标目录不存在则创建（自动处理多级目录）
 try:
     os.makedirs(target_dir_service, exist_ok=True)
@@ -38,7 +38,7 @@ arguments_service = ["--grpc_out=" + target_dir_service,
                     "-I=" + protos_src_base_dir,
                     "-I=" + GRPC_INSTALL_DIR + "/include/google/protobuf/",
                     "--plugin=protoc-gen-grpc=" + grpc_cpp_plugin_path,
-                    protos_src_base_dir + "/common/v1/common.proto",                    
+                    protos_src_base_dir + "/common/v1/common.proto",
                     protos_src_base_dir + "/hello/hello.proto",
                     protos_src_base_dir + "/control/status.proto",
 
@@ -55,7 +55,7 @@ arguments_control = ["--grpc_out=" + target_dir_control,
                     "-I=" + protos_src_base_dir,
                     "-I=" + GRPC_INSTALL_DIR + "/include/google/protobuf/",
                     "--plugin=protoc-gen-grpc=" + grpc_cpp_plugin_path,
-                    protos_src_base_dir + "/common/v1/common.proto",                    
+                    protos_src_base_dir + "/common/v1/common.proto",
                     protos_src_base_dir + "/hello/hello.proto",
                     protos_src_base_dir + "/control/status.proto"
                     ]

@@ -8,17 +8,17 @@
 #include <QStackedWidget>
 #include <QHBoxLayout>
 #include "function_menu_form.h" // 功能菜单
-#include "account_mgr_form.h" // 管理账号
-#include "phone_mgr_form.h" // 管理手机号
-#include "check_pwd_security_form.h" // 检查密码安全
-#include "data_owner_form.h" // 管理数据归属
+#include "account/account_mgr_form.h" // 管理账号
+#include "phone/phone_mgr_form.h" // 管理手机号
+#include "account/check_pwd_security_form.h" // 检查密码安全
+#include "account/data_owner_form.h" // 管理数据归属
 #include "output_form.h"
 #include "input_form.h"
 #include "log_run_form.h"
 #include "log_handle_form.h"
-#include "personal_mgr_form.h" // 管理个人账号
-#include "preferences_form.h" // 注销账号
-#include "pwd_gen_dlg.h"
+#include "user/personal_mgr_form.h" // 管理个人账号
+#include "user/preferences_form.h" // 注销账号
+#include "tools/pwd_gen_dlg.h"
 
 namespace Ui {
 class MainWorkbench;
@@ -57,6 +57,7 @@ private slots:
 
     // === 工具菜单 ===
     void onPasswdGen(); // 密码生成器
+    void onUuidGen();
     void onEncrypt(); // 加密
     void onDecrypt(); // 解密
 
@@ -108,6 +109,7 @@ private:
     QAction* action_customize_;
     // ------ 工具 ------
     QAction* action_passwd_gen_;
+    QAction* action_uuid_gen_;
     QAction* action_encrypt_;
     QAction* action_decrypt_;
     // ------ 帮助 ------

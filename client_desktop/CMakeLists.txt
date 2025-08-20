@@ -30,7 +30,9 @@ set(gRPC_ROOT ${GRPC_INSTALL_DIR})
 set(Protobuf_DIR "${GRPC_INSTALL_DIR}/lib/cmake/protobuf")
 
 # 添加自定义 CMake 模块路径（包含 grpc 的 Config.cmake）
-list(APPEND CMAKE_MODULE_PATH "${GRPC_INSTALL_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH
+        "${GRPC_INSTALL_DIR}/cmake"
+)
 
 # 启用自动处理moc/uic/rcc
 set(CMAKE_AUTOUIC ON)
@@ -43,13 +45,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 查找 Qt
+# 查找 Qt、Protobuf、 gRPC
 set(QT_NO_PRIVATE_MODULE_WARNING ON)  # 抑制私有模块警告
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 # find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-
-# 查找 Protobuf 和 gRPC
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 
@@ -58,25 +58,12 @@ include_directories(
         ${OPENSSL_INCLUDE_DIR} # 添加 OpenSSL 头文件路径
         ${SQLite3_INCLUDE_DIR} # 添加 SQLite3 头文件路径
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/state
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/storage
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/rpc
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/business
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/models # 用户侧模型
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/common # 公共组件
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/account
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/phone
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/user
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/tools
 
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc
-        ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc/user/v1
-        ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc/account/v1
-        ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc/common/v1
-        # ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/qt/ui        # 添加头文件搜索路径
+        # ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/qt/ui
 )
 
 set(PROJECT_SOURCES
@@ -100,6 +87,7 @@ set(PROJECT_SOURCES
         src/business/date_time.cpp
         # src/business/pwd_utils.cpp
         src/business/pwd_generator.cpp
+        src/business/uuid_generator.cpp
 
         # 6. UI 层
         # (6.0) 资源文件
@@ -144,6 +132,7 @@ set(PROJECT_SOURCES
 
         # (6.7) 工具类：密码生成器、密码安全检查器、加密解密器
         src/ui/tools/pwd_gen_dlg.cpp
+        src/ui/tools/uuid_gen_dlg.cpp
 
         # (6.8) 迁移备份数据
         src/ui/output_form.cpp

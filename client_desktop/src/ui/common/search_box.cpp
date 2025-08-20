@@ -1,4 +1,4 @@
-#include "search_box.h"
+#include "common/search_box.h"
 #include <QStyle>
 
 SearchBox::SearchBox(QWidget *parent_)

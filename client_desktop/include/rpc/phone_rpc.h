@@ -6,8 +6,8 @@
 // #include <map>
 #include <vector>
 #include <grpcpp/grpcpp.h>
-#include "phone.grpc.pb.h"
-#include "mobile_phone.h"
+#include "account/v1/phone.grpc.pb.h"
+#include "models/mobile_phone.h"
 
 namespace zinpass::rpc{
 

@@ -1,9 +1,9 @@
-#include "dialog_delete_account.h"
+#include "account/dialog_delete_account.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QLabel>
-#include "state_manager.h"
-#include "account_rpc.h"
+#include "state/state_manager.h"
+#include "rpc/account_rpc.h"
 
 DialogDeleteAccount::DialogDeleteAccount(const std::string& account_id, QWidget* parent) : QDialog(parent), account_id_(account_id) {
     setup_ui();

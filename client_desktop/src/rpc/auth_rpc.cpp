@@ -1,4 +1,4 @@
-#include "auth_rpc.h"
+#include "rpc/auth_rpc.h"
 #include <QDebug>
 
 namespace zinpass::rpc{

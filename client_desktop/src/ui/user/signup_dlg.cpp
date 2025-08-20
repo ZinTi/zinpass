@@ -1,7 +1,7 @@
+#include "user/signup_dlg.h"
 #include <QMessageBox>
-#include "signup_dlg.h"
-#include "is_input_valid.h"
-#include "user_rpc.h"
+#include "common/is_input_valid.h"
+#include "rpc/user_rpc.h"
 #include <string>
 
 SignupDlg::SignupDlg(QWidget* parent) : QDialog(parent) {

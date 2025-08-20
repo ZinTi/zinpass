@@ -1,8 +1,8 @@
-#include "deletion_guide_dlg.h"
+#include "phone/deletion_guide_dlg.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
-#include "state_manager.h"
+#include "state/state_manager.h"
 #include "rpc/phone_rpc.h"
 
 DeletionGuideDlg::DeletionGuideDlg(const int phone_id, const int affected_records, QWidget *parent)

@@ -1,4 +1,4 @@
-#include "user.h"
+#include "models/user.h"
 #include <iostream>
 
 namespace zinpass::models{

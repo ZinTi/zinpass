@@ -1,12 +1,12 @@
-#include "dialog_add_account.h"
-#include "state_manager.h"
-#include "dialog_auth.h"
+#include "account/dialog_add_account.h"
+#include "state/state_manager.h"
+#include "common/dialog_auth.h"
 #include <QMessageBox>
 
 // RPC 封装
-#include "account_rpc.h"
-#include "phone_rpc.h"
-#include "category_rpc.h"
+#include "rpc/account_rpc.h"
+#include "rpc/phone_rpc.h"
+#include "rpc/category_rpc.h"
 
 DialogAddAccount::DialogAddAccount(QWidget *parent) : QDialog(parent){
     setup_ui();

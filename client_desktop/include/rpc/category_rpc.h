@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <grpcpp/grpcpp.h>
-#include "category.grpc.pb.h"
+#include "account/v1/category.grpc.pb.h"
 
 namespace zinpass::rpc{
 

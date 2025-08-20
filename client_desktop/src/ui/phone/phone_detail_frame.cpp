@@ -1,10 +1,10 @@
-#include "phone_detail_frame.h"
+#include "phone/phone_detail_frame.h"
 
 #include <QMessageBox>
-#include "state_manager.h"
-#include "phone_rpc.h"
-#include "telecom_rpc.h"
-#include "dialog_auth.h"
+#include "state/state_manager.h"
+#include "rpc/phone_rpc.h"
+#include "rpc/telecom_rpc.h"
+#include "common/dialog_auth.h"
 #include "phone/deletion_guide_dlg.h"
 
 PhoneDetailFrame::PhoneDetailFrame(QFrame *parent) : QFrame(parent){

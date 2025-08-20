@@ -1,5 +1,5 @@
-#include "phone_rpc.h"
-#include "mobile_phone.h"
+#include "rpc/phone_rpc.h"
+#include "models/mobile_phone.h"
 
 namespace zinpass::rpc{
     PhoneRPC::PhoneRPC(std::shared_ptr<grpc::Channel> channel)

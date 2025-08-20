@@ -1,13 +1,13 @@
-#include "dialog_edit_account.h"
-#include "dialog_auth.h"
-#include "state_manager.h"
+#include "account/dialog_edit_account.h"
+#include "common/dialog_auth.h"
+#include "state/state_manager.h"
 #include "dialog_exposed_pwd.h"
 #include <QMessageBox>
 #include "dialog_delete_account.h"
 // RPC 封装
-#include "account_rpc.h"
-#include "phone_rpc.h"
-#include "category_rpc.h"
+#include "rpc/account_rpc.h"
+#include "rpc/phone_rpc.h"
+#include "rpc/category_rpc.h"
 
 DialogEditAccount::DialogEditAccount(const std::string& account_id, QWidget* parent) : QDialog(parent), account_id_(account_id) {
     // 创建主窗口的中心部件

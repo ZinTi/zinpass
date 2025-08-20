@@ -1,14 +1,14 @@
-#include "account_mgr_form.h"
+#include "account/account_mgr_form.h"
 #include <QMessageBox>
 
 #include "dialog_exposed_pwd.h"
 #include "common/is_input_valid.h"
 #include "common/dialog_auth.h"
-#include "state_manager.h"
-#include "view_account.h"
+#include "state/state_manager.h"
+#include "models/view_account.h"
 
 // RPC 封装
-#include "account_rpc.h"
+#include "rpc/account_rpc.h"
 #include "common/toast.h"
 
 // #include "pwd_generator_dlg.h"

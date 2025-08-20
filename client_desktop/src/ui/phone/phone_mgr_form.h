@@ -12,9 +12,9 @@
 #include <QPushButton>
 #include <QToolButton>
 
-#include "search_box.h"
-#include "phone_filter_form.h"
-#include "phone_detail_frame.h"
+#include "common/search_box.h"
+#include "phone/phone_filter_form.h"
+#include "phone/phone_detail_frame.h"
 
 class PhoneMgrForm final : public QWidget{
     Q_OBJECT

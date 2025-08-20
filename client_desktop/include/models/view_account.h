@@ -2,7 +2,7 @@
 #define VIEW_ACCOUNT_H
 
 #include <string>
-#include "account.h"
+#include "models/account.h"
 
 namespace zinpass::models{
 

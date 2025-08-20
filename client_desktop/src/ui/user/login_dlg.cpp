@@ -1,11 +1,11 @@
-#include "login_dlg.h"
+#include "user/login_dlg.h"
 #include <QMessageBox>
-#include <state_manager.h>
+#include "state/state_manager.h"
 #include "signup_dlg.h"
-#include "user.h"
-#include "user_rpc.h"
-#include "auth_rpc.h"
-#include "state_manager.h"
+#include "models/user.h"
+#include "rpc/user_rpc.h"
+#include "rpc/auth_rpc.h"
+#include "state/state_manager.h"
 
 LoginDlg::LoginDlg(QWidget* parent) : QDialog(parent) {
     setup_ui();

@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include <grpcpp/grpcpp.h>
-#include "auth.grpc.pb.h"
+#include "user/v1/auth.grpc.pb.h"
 
 namespace zinpass::rpc{
 

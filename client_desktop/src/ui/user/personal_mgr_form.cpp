@@ -1,8 +1,8 @@
-#include "personal_mgr_form.h"
+#include "user/personal_mgr_form.h"
 #include <QMessageBox>
 
-#include "state_manager.h"
-#include "user_rpc.h"
+#include "state/state_manager.h"
+#include "rpc/user_rpc.h"
 
 PersonalMgrForm::PersonalMgrForm(QWidget *parent) : QWidget(parent){
     setup_ui();

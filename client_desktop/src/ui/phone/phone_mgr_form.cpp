@@ -1,10 +1,10 @@
-#include "phone_mgr_form.h"
-#include "mobile_phone.h"
+#include "phone/phone_mgr_form.h"
+#include "models/mobile_phone.h"
 #include <QMessageBox>
-#include "widget_public_method.h"
+#include "common/widget_public_method.h"
 #include "dialog_add_phone.h"
-#include "state_manager.h"
-#include "phone_rpc.h"
+#include "state/state_manager.h"
+#include "rpc/phone_rpc.h"
 
 PhoneMgrForm::PhoneMgrForm(QWidget *parent) : QWidget(parent){
     setup_ui();

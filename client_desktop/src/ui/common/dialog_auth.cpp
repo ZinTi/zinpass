@@ -1,4 +1,4 @@
-#include "dialog_auth.h"
+#include "common/dialog_auth.h"
 #include <QApplication>
 
 #include <QMessageBox>

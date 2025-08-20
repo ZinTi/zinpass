@@ -1,4 +1,4 @@
-#include "settings_dlg.h"
+#include "user/settings_dlg.h"
 
 #include <QMessageBox>
 

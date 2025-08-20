@@ -1,6 +1,8 @@
 #include "main_workbench.h"
 #include <QMessageBox>
 
+#include "tools/uuid_gen_dlg.h"
+
 MainWorkbench::MainWorkbench(QWidget* parent) : QMainWindow(parent) {
     setup_ui();
 
@@ -165,6 +167,9 @@ void MainWorkbench::setup_menu_tools() {
     this->action_passwd_gen_ = new QAction("密码生成器", this);
     connect(this->action_passwd_gen_, &QAction::triggered, this, &MainWorkbench::onPasswdGen);
 
+    this->action_uuid_gen_ = new QAction("UUID", this);
+    connect(this->action_uuid_gen_, &QAction::triggered, this, &MainWorkbench::onUuidGen);
+
     this->action_encrypt_ = new QAction("加密", this);
     connect(this->action_encrypt_, &QAction::triggered, this, &MainWorkbench::onEncrypt);
 
@@ -172,6 +177,7 @@ void MainWorkbench::setup_menu_tools() {
     connect(this->action_decrypt_, &QAction::triggered, this, &MainWorkbench::onDecrypt);
 
     this->menu_tools_->addAction(this->action_passwd_gen_);
+    this->menu_tools_->addAction(this->action_uuid_gen_);
     this->menu_tools_->addAction(this->action_encrypt_);
     this->menu_tools_->addAction(this->action_decrypt_);
 }
@@ -321,6 +327,10 @@ void MainWorkbench::onCustomize() {
 void MainWorkbench::onPasswdGen() {
     auto* passwd_generator = new PwdGenDlg(this);
     passwd_generator->show();
+}
+void MainWorkbench::onUuidGen() {
+    auto* uuid_generator = new UuidGenDlg(this);
+    uuid_generator->show();
 }
 void MainWorkbench::onEncrypt() {
     QMessageBox::information(this, "加密", "打开加密工具");

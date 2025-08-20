@@ -1,9 +1,9 @@
-#include "dialog_exposed_pwd.h"
+#include "account/dialog_exposed_pwd.h"
 #include <QMessageBox>
 #include <QApplication>
 #include <QClipboard>
-#include "state_manager.h"
-#include "account_rpc.h"
+#include "state/state_manager.h"
+#include "rpc/account_rpc.h"
 
 DialogExposedPwd::DialogExposedPwd(const std::string& account_id, QWidget* parent)
     : QDialog(parent), account_id_(account_id) {

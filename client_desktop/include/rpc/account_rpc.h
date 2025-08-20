@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <grpcpp/grpcpp.h>
-#include "account.grpc.pb.h"
-#include "view_account.h"
+#include "account/v1/account.grpc.pb.h"
+#include "models/view_account.h"
 
 namespace zinpass::rpc{
 

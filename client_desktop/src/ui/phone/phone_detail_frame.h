@@ -10,7 +10,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
-#include "mobile_phone.h"
+#include "models/mobile_phone.h"
 
 class PhoneDetailFrame final : public QFrame
 {

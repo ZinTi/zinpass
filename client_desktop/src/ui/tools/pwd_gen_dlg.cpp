@@ -1,4 +1,4 @@
-#include "pwd_gen_dlg.h"
+#include "tools/pwd_gen_dlg.h"
 #include <QApplication>
 #include <QDialog>
 #include <QMenu>
@@ -7,7 +7,7 @@
 #include <QFileDialog>
 #include <QClipboard>
 #include <QProcess>
-#include "pwd_generator.h"
+#include "business/pwd_generator.h"
 #include "common/toast.h"
 #include "common/font_util.h"
 
@@ -263,11 +263,11 @@ void PwdGenDlg::on_btn_save_as_clicked(){  // Save text to file.
     }
 
     // 打开文件保存对话框
-    const QString filePath = QFileDialog::getSaveFileName(this, "另存为", "", "文本文件 (*.txt)");
+    const QString file_path = QFileDialog::getSaveFileName(this, "另存为", "", "文本文件 (*.txt)");
 
-    if (!filePath.isEmpty()) {
+    if (!file_path.isEmpty()) {
         // 打开文件进行写入操作
-        QFile file(filePath);
+        QFile file(file_path);
         if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             // 使用 QTextStream 写入文本
             QTextStream out(&file);

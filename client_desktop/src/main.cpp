@@ -2,8 +2,8 @@
 #include <QDir>
 #include <QMessageBox>
 
-#include "state_manager.h"
-#include "login_dlg.h"
+#include "state/state_manager.h"
+#include "user/login_dlg.h"
 #include "main_workbench.h"
 #include "common/font_util.h"
 

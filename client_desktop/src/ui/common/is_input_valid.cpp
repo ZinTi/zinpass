@@ -1,4 +1,4 @@
-#include "is_input_valid.h"
+#include "common/is_input_valid.h"
 #include <QMessageBox>
 #include <QRegularExpression>
 

@@ -1,4 +1,4 @@
-#include "widget_public_method.h"
+#include "common/widget_public_method.h"
 
 void set_table_widget_column_non_editable(QTableWidget* table_widget, const int column) {
     const int rowCount = table_widget->rowCount();

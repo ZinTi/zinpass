@@ -1,8 +1,8 @@
-#include "dialog_add_phone.h"
+#include "phone/dialog_add_phone.h"
 #include <QMessageBox>
-#include "state_manager.h"
-#include "telecom_rpc.h"
-#include "phone_rpc.h"
+#include "state/state_manager.h"
+#include "rpc/telecom_rpc.h"
+#include "rpc/phone_rpc.h"
 
 DialogAddPhone::DialogAddPhone(QWidget* parent) : QDialog(parent) {
     setup_ui();

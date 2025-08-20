@@ -1,4 +1,4 @@
-#include "view_account.h"
+#include "models/view_account.h"
 
 namespace zinpass::models{
 

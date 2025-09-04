@@ -5,7 +5,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-class OutputForm final : public QWidget{
+class OutputForm final : public QWidget {
     Q_OBJECT
 
 public:

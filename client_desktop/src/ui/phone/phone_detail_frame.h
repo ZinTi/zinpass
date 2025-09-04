@@ -12,8 +12,7 @@
 #include <QFormLayout>
 #include "models/mobile_phone.h"
 
-class PhoneDetailFrame final : public QFrame
-{
+class PhoneDetailFrame final : public QFrame{
     Q_OBJECT
 
 public:

@@ -3,8 +3,7 @@
 
 #include <QWidget>
 
-class PreferencesForm final : public QWidget
-{
+class PreferencesForm final : public QWidget {
     Q_OBJECT
 
 public:

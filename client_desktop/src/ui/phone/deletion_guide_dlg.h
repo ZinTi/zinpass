@@ -38,12 +38,12 @@ private:
 
     QComboBox* combo_phone_;
 
-    QButtonGroup* group_rdo_btn_;
+    QButtonGroup* bg_rdo_btn_;
     QRadioButton* rdo_option1_;
     QRadioButton* rdo_option2_;
     QRadioButton* rdo_option3_;
     QRadioButton* rdo_option4_;
-    QGroupBox* group_box_;
+    QGroupBox* gb_;
 
     QDialogButtonBox* dlg_btn_box_;
 

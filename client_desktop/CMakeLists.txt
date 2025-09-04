@@ -58,7 +58,6 @@ include_directories(
         ${OPENSSL_INCLUDE_DIR} # 添加 OpenSSL 头文件路径
         ${SQLite3_INCLUDE_DIR} # 添加 SQLite3 头文件路径
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
 
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated
@@ -72,6 +71,7 @@ set(PROJECT_SOURCES
 
         # 2. 应用运行时状态管理层（全局变量、跨组件的共享状态、网络请求的临时上下文、当前用户对象、UI主题状态、临时缓存） state
         src/state/state_manager.cpp
+        src/state/channel_manager.cpp
 
         # 3. 本地持久化存储抽象层（用户偏好设置、本地缓存、加密的会话令牌、设备标识等）storage
         # 暂无
@@ -98,9 +98,8 @@ set(PROJECT_SOURCES
         src/ui/common/toast.cpp
         src/ui/common/numbered_text_edit.cpp
         src/ui/common/search_box.cpp
-        src/ui/common/dialog_auth.cpp    # 验证当前用户身份
+        src/ui/common/dlg_auth.cpp    # 验证当前用户身份
         src/ui/common/is_input_valid.cpp # 判断输入的数据是否合法-前端部分辅助验证
-        src/ui/common/widget_public_method.cpp # 部件公用方法
 
         # (6.2) 系统登录界面、系统用户注册界面
         src/ui/user/login_dlg.cpp
@@ -116,23 +115,24 @@ set(PROJECT_SOURCES
         src/ui/account/account_filter_form.cpp
         src/ui/account/account_mgr_form.cpp
         src/ui/account/popup_filter_window.cpp
-        src/ui/account/dialog_exposed_pwd.cpp # 查看明文密码的弹窗
-        src/ui/account/dialog_add_account.cpp
-        src/ui/account/dialog_edit_account.cpp
-        src/ui/account/dialog_delete_account.cpp
+        src/ui/account/dlg_exposed_pwd.cpp # 查看明文密码的弹窗
+        src/ui/account/dlg_add_account.cpp
+        src/ui/account/dlg_edit_account.cpp
+        src/ui/account/dlg_delete_account.cpp
         src/ui/account/data_owner_form.cpp
         src/ui/account/check_pwd_security_form.cpp # 安全检查页面
 
         # (6.6) 管理手机号：页面框架、增加手机号
         src/ui/phone/phone_filter_form.cpp
         src/ui/phone/phone_detail_frame.cpp
-        src/ui/phone/dialog_add_phone.cpp
+        src/ui/phone/dlg_add_phone.cpp
         src/ui/phone/phone_mgr_form.cpp
         src/ui/phone/deletion_guide_dlg.cpp
 
         # (6.7) 工具类：密码生成器、密码安全检查器、加密解密器
         src/ui/tools/pwd_gen_dlg.cpp
         src/ui/tools/uuid_gen_dlg.cpp
+        src/ui/tools/notepad.cpp
 
         # (6.8) 迁移备份数据
         src/ui/output_form.cpp

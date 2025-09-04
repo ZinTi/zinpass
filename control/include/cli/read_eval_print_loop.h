@@ -1,7 +1,7 @@
 #ifndef READ_EVAL_PRINT_LOOP_H
 #define READ_EVAL_PRINT_LOOP_H
-#include <command_handler.h>
-#include <prompt.h>
+#include "cli/command_handler.h"
+#include "cli/prompt.h"
 
 namespace zinpass::cli {
     class ReadEvalPrintLoop {

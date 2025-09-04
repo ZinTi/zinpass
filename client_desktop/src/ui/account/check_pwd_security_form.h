@@ -5,7 +5,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-class CheckPwdSecurityForm final : public QWidget{
+class CheckPwdSecurityForm final : public QWidget {
     Q_OBJECT
 
 public:

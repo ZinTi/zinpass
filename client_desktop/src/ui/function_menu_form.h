@@ -8,7 +8,7 @@
 #include <QPixmap>
 #include <QVBoxLayout>
 
-class FunctionMenuForm final : public QWidget{
+class FunctionMenuForm final : public QWidget {
     Q_OBJECT
 
 public:

@@ -15,7 +15,7 @@
 #include <QGroupBox>
 #include "popup_filter_window.h"
 
-class AccountFilterForm final : public QWidget{
+class AccountFilterForm final : public QWidget {
     Q_OBJECT
 
 public:

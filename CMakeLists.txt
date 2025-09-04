@@ -11,10 +11,10 @@ else()
 endif()
 
 # 设置所有可执行文件的输出目录
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/zinpass-v${ZINPASS_VERSION}-${OS_NAME}-mingw64/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/zinpass-v${ZINPASS_VERSION}-x86_64-${OS_NAME}-gcc/bin)
 
 # 引入子项目
 add_subdirectory(service)
 add_subdirectory(control)
 add_subdirectory(client_desktop)
-add_subdirectory(tools/pwdgen)
+# add_subdirectory(tools/pwdgen)

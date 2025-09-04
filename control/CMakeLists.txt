@@ -33,6 +33,9 @@ set(PROJECT_SOURCES
         # 2. 通信-grpc
         src/rpc/status_rpc.cpp
 
+        # 3. 状态-state
+        src/state/channel_manager.cpp
+
         # auto_generated
         auto_generated/common/v1/common.pb.cc
         auto_generated/common/v1/common.grpc.pb.cc
@@ -49,8 +52,7 @@ add_executable(zinpassctl
 # 包含头文件目录（在add_executable、add_library之后）
 target_include_directories(zinpassctl
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/cli
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/rpc
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/common

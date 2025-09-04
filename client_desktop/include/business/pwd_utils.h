@@ -8,8 +8,7 @@
 #include <openssl/evp.h>
 #include <openssl/err.h>
 
-class PwdUtils
-{
+class PwdUtils{
 public:
     PwdUtils();
 

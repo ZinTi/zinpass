@@ -15,7 +15,7 @@ UuidGenDlg::UuidGenDlg(QWidget *parent) : QDialog(parent) {
     this->with_hyphens_ = true;
 
     // widget
-    this->lbl_uuid_version_ = new QLabel("版本", this);
+    lbl_uuid_version_ = new QLabel("版本", this);
     this->cb_uuid_version_ = new QComboBox(this);
     this->cb_uuid_version_->addItem("v7");
     this->cb_uuid_version_->addItem("v5");
@@ -23,66 +23,69 @@ UuidGenDlg::UuidGenDlg(QWidget *parent) : QDialog(parent) {
     this->cb_uuid_version_->setCurrentText("v4");
     this->cb_uuid_version_->setDisabled(true);
 
-    this->btn_uppercase_ = new QToolButton(this);
-    this->btn_uppercase_->setText("a↓");
-    this->btn_uppercase_->setToolTip(tr("字母大小写"));
-    this->btn_uppercase_->setAutoRaise(true);         // 启用自动悬停效果
+    btn_uppercase_ = new QToolButton(this);
+    btn_uppercase_->setText("a↓");
+    btn_uppercase_->setToolTip(tr("字母大小写"));
+    btn_uppercase_->setAutoRaise(true);         // 启用自动悬停效果
 
-    this->btn_with_hyphens_ = new QToolButton(this);
-    this->btn_with_hyphens_->setIcon(QIcon(":/tools/svg/hyphen.svg"));
-    this->btn_with_hyphens_->setToolTip(tr("连字符"));
-    this->btn_with_hyphens_->setIconSize(QSize(16, 16));
-    this->btn_with_hyphens_->setAutoRaise(true);
+    btn_with_hyphens_ = new QToolButton(this);
+    btn_with_hyphens_->setIcon(QIcon(":/tools/svg/hyphen.svg"));
+    btn_with_hyphens_->setToolTip(tr("连字符"));
+    btn_with_hyphens_->setIconSize(QSize(16, 16));
+    btn_with_hyphens_->setAutoRaise(true);
 
-    this->btn_download_ = new QToolButton(this);
-    this->btn_download_->setIcon(QIcon(":/tools/svg/download.svg"));
-    this->btn_download_->setToolTip(tr("下载"));
-    this->btn_download_->setIconSize(QSize(16, 16));
-    this->btn_download_->setAutoRaise(true);
+    btn_download_ = new QToolButton(this);
+    btn_download_->setIcon(QIcon(":/tools/svg/download.svg"));
+    btn_download_->setToolTip(tr("下载"));
+    btn_download_->setIconSize(QSize(16, 16));
+    btn_download_->setAutoRaise(true);
 
-    this->btn_copy_ = new QToolButton(this);
-    this->btn_copy_->setIcon(QIcon(":/tools/svg/copy.svg"));
-    this->btn_copy_->setToolTip(tr("复制"));
-    this->btn_copy_->setIconSize(QSize(16, 16));
-    this->btn_copy_->setAutoRaise(true);
+    btn_copy_ = new QToolButton(this);
+    btn_copy_->setIcon(QIcon(":/tools/svg/copy.svg"));
+    btn_copy_->setToolTip(tr("复制"));
+    btn_copy_->setIconSize(QSize(16, 16));
+    btn_copy_->setAutoRaise(true);
 
-    this->lbl_quantity_ = new QLabel("数量", this);
+    lbl_quantity_ = new QLabel("数量", this);
     this->spn_quantity_ = new QSpinBox(this);
     this->spn_quantity_->setRange(1, 100);
     this->spn_quantity_->setValue(1);
 
-    this->btn_generate_ = new QPushButton("生成", this);
+    btn_generate_ = new QPushButton("生成", this);
 
-    this->editor_ = new NumberedTextEdit(this);
-    this->editor_->setReadOnly(true);
+    editor_ = new NumberedTextEdit(this);
+    editor_->setReadOnly(true);
+    // 这两个好像还是没啥用
+    editor_->setLineWrapMode(QPlainTextEdit::WidgetWidth); // 基于控件宽度换行
+    editor_->setWordWrapMode(QTextOption::WrapAnywhere);   // 在任何字符后换行
 
     // layout
-    this->lyt_main_ = new QVBoxLayout(this);
-    this->lyt_top_ = new QHBoxLayout(this);
-    this->lyt_bottom_ = new QHBoxLayout(this);
+    lyt_main_ = new QVBoxLayout(this);
+    lyt_top_ = new QHBoxLayout(this);
+    lyt_bottom_ = new QHBoxLayout(this);
 
-    this->lyt_top_->addWidget(this->lbl_uuid_version_);
-    this->lyt_top_->addWidget(this->cb_uuid_version_);
-    this->lyt_top_->addStretch();
-    this->lyt_top_->addWidget(this->btn_uppercase_);
-    this->lyt_top_->addWidget(this->btn_with_hyphens_);
-    this->lyt_top_->addWidget(this->btn_download_);
-    this->lyt_top_->addWidget(this->btn_copy_);
+    lyt_top_->addWidget(lbl_uuid_version_);
+    lyt_top_->addWidget(this->cb_uuid_version_);
+    lyt_top_->addStretch();
+    lyt_top_->addWidget(btn_uppercase_);
+    lyt_top_->addWidget(btn_with_hyphens_);
+    lyt_top_->addWidget(btn_download_);
+    lyt_top_->addWidget(btn_copy_);
 
-    this->lyt_bottom_->addWidget(this->lbl_quantity_);
-    this->lyt_bottom_->addWidget(this->spn_quantity_);
-    this->lyt_bottom_->addStretch();
-    this->lyt_bottom_->addWidget(this->btn_generate_);
+    lyt_bottom_->addWidget(lbl_quantity_);
+    lyt_bottom_->addWidget(this->spn_quantity_);
+    lyt_bottom_->addStretch();
+    lyt_bottom_->addWidget(btn_generate_);
 
-    this->lyt_main_->addLayout(this->lyt_top_);
-    this->lyt_main_->addWidget(this->editor_);
-    this->lyt_main_->addLayout(this->lyt_bottom_);
+    lyt_main_->addLayout(lyt_top_);
+    lyt_main_->addWidget(editor_);
+    lyt_main_->addLayout(lyt_bottom_);
 
-    connect(this->btn_uppercase_, &QToolButton::clicked, this, &UuidGenDlg::on_btn_uppercase_clicked);
-    connect(this->btn_with_hyphens_, &QToolButton::clicked, this, &UuidGenDlg::on_btn_with_hyphens_clicked);
-    connect(this->btn_download_, &QToolButton::clicked, this, &UuidGenDlg::on_btn_download_clicked);
-    connect(this->btn_copy_, &QToolButton::clicked, this, &UuidGenDlg::on_btn_copy_clicked);
-    connect(this->btn_generate_, &QPushButton::clicked, this, &UuidGenDlg::on_btn_generate_clicked);
+    connect(btn_uppercase_, &QToolButton::clicked, this, &UuidGenDlg::on_btn_uppercase_clicked);
+    connect(btn_with_hyphens_, &QToolButton::clicked, this, &UuidGenDlg::on_btn_with_hyphens_clicked);
+    connect(btn_download_, &QToolButton::clicked, this, &UuidGenDlg::on_btn_download_clicked);
+    connect(btn_copy_, &QToolButton::clicked, this, &UuidGenDlg::on_btn_copy_clicked);
+    connect(btn_generate_, &QPushButton::clicked, this, &UuidGenDlg::on_btn_generate_clicked);
 
 }
 
@@ -91,24 +94,25 @@ UuidGenDlg::~UuidGenDlg() = default;
 void UuidGenDlg::on_btn_uppercase_clicked() {
     uppercase_ = !uppercase_;
     if (uppercase_) {
-        this->btn_uppercase_->setText("A↑");
+        btn_uppercase_->setText("A↑");
     }else {
-        this->btn_uppercase_->setText("a↓");
+        btn_uppercase_->setText("a↓");
     }
 }
 
 void UuidGenDlg::on_btn_with_hyphens_clicked() {
     with_hyphens_ = !with_hyphens_;
     if (with_hyphens_) {
-        this->btn_with_hyphens_->setIcon(QIcon(":/tools/svg/hyphen.svg"));
+        btn_with_hyphens_->setIcon(QIcon(":/tools/svg/hyphen.svg"));
     }else {
-        this->btn_with_hyphens_->setIcon(QIcon(":/tools/svg/no_hyphen.svg"));
+        btn_with_hyphens_->setIcon(QIcon(":/tools/svg/no_hyphen.svg"));
     }
 }
 void UuidGenDlg::on_btn_download_clicked() {
-    const QString text = this->editor_->toPlainText();
+    const QString text = editor_->toPlainText();
     // 打开文件保存对话框
-    const QString file_path = QFileDialog::getSaveFileName(this, "另存为", "", "文本文件 (*.txt)");
+    const QString file_path = QFileDialog::getSaveFileName(this, "另存为", "",
+        "Normal text file (*.txt);;Comma-Separated Values (*.csv);;All types (*)");
 
     if (!file_path.isEmpty()) {
         // 打开文件进行写入操作
@@ -123,7 +127,7 @@ void UuidGenDlg::on_btn_download_clicked() {
     }
 }
 void UuidGenDlg::on_btn_copy_clicked() {
-    const QString clipboard_text = this->editor_->toPlainText();
+    const QString clipboard_text = editor_->toPlainText();
     // 获取剪贴板并设置文本
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(clipboard_text);
@@ -156,5 +160,5 @@ void UuidGenDlg::on_btn_generate_clicked() {
         uuids.push_back(uuid_str);
         uuids_qs.append(uuid_str + "\n");*/
     }
-    this->editor_->setPlainText(uuids_qs);
+    editor_->setPlainText(uuids_qs);
 }

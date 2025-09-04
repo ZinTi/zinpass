@@ -19,7 +19,7 @@ ComponentsMenuWgt::ComponentsMenuWgt(QWidget *parent) : QWidget(parent){
 
     // 创建一个包含四个QCheckBox的QWidget、创建四个QCheckBox并添加到布局中
     this->wgt_chk_box_ = new QWidget(this);
-    this->lyt_chk_box_ = new QVBoxLayout(this->wgt_chk_box_);
+    lyt_chk_box_ = new QVBoxLayout(this->wgt_chk_box_);
 
     chk_digits_ = new QCheckBox("数字（0-9）", this->wgt_chk_box_);
     chk_lowercase_ = new QCheckBox("小写字母（a-z）", this->wgt_chk_box_);
@@ -30,10 +30,10 @@ ComponentsMenuWgt::ComponentsMenuWgt(QWidget *parent) : QWidget(parent){
     chk_uppercase_->setChecked(true);
     chk_symbols_->setChecked(true);
 
-    this->lyt_chk_box_->addWidget(chk_digits_);
-    this->lyt_chk_box_->addWidget(chk_lowercase_);
-    this->lyt_chk_box_->addWidget(chk_uppercase_);
-    this->lyt_chk_box_->addWidget(chk_symbols_);
+    lyt_chk_box_->addWidget(chk_digits_);
+    lyt_chk_box_->addWidget(chk_lowercase_);
+    lyt_chk_box_->addWidget(chk_uppercase_);
+    lyt_chk_box_->addWidget(chk_symbols_);
 
     // 创建QWidgetAction并将包含QCheckBox的QWidget添加到其中
     this->wgt_action_ = new QWidgetAction(menu_components_);
@@ -45,9 +45,9 @@ ComponentsMenuWgt::ComponentsMenuWgt(QWidget *parent) : QWidget(parent){
     // 为按钮绑定菜单
     btn_components_menu_->setMenu(menu_components_);
 
-    this->lyt_main_ = new QVBoxLayout(this);
-    this->lyt_main_->addWidget(btn_components_menu_);
-    setLayout(this->lyt_main_);
+    lyt_main_ = new QVBoxLayout(this);
+    lyt_main_->addWidget(btn_components_menu_);
+    setLayout(lyt_main_);
 }
 
 ComponentsMenuWgt::~ComponentsMenuWgt(){
@@ -124,12 +124,12 @@ void PwdGenDlg::initWidget(){
 }
 
 void PwdGenDlg::initLayout(){
-    this->lyt_main_ = new QVBoxLayout(this);
-    this->lyt_header_ = new QHBoxLayout(this);
-    this->lyt_body_ = new QHBoxLayout(this);
-    this->lyt_footer_ = new QHBoxLayout(this);
-    this->lyt_setting_ = new QVBoxLayout(this);
-    this->lyt_edit_ = new QFormLayout(this);
+    lyt_main_ = new QVBoxLayout(this);
+    lyt_header_ = new QHBoxLayout(this);
+    lyt_body_ = new QHBoxLayout(this);
+    lyt_footer_ = new QHBoxLayout(this);
+    lyt_setting_ = new QVBoxLayout(this);
+    lyt_edit_ = new QFormLayout(this);
 
     lyt_main_->addLayout(lyt_header_);
     lyt_main_->addLayout(lyt_body_);
@@ -263,7 +263,8 @@ void PwdGenDlg::on_btn_save_as_clicked(){  // Save text to file.
     }
 
     // 打开文件保存对话框
-    const QString file_path = QFileDialog::getSaveFileName(this, "另存为", "", "文本文件 (*.txt)");
+    const QString file_path = QFileDialog::getSaveFileName(this, "另存为", "",
+        "Normal text file (*.txt);;Comma-Separated Values (*.csv);;All types (*)");
 
     if (!file_path.isEmpty()) {
         // 打开文件进行写入操作

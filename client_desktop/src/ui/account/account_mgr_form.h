@@ -13,11 +13,11 @@
 #include <QFormLayout>
 #include "common/search_box.h"
 #include "account_filter_form.h"
-#include "dialog_add_account.h"
-#include "dialog_edit_account.h"
+#include "dlg_add_account.h"
+#include "dlg_edit_account.h"
 // #include "popup_filter_window.h"
 
-class AccountMgrForm final : public QWidget{
+class AccountMgrForm final : public QWidget {
     Q_OBJECT
 
 public:
@@ -27,7 +27,7 @@ public:
 private slots:
     void on_btn_read_passwd_clicked(); // 查询和显示明文密码
     void on_btn_add_account_clicked() const; // 增加密码记录
-    void on_btn_detail_and_edit_clicked(); // 更新记录
+    void on_btn_detail_and_edit_clicked() const; // 更新记录
     void on_btn_remove_account_clicked();  // 删除密码记录
     void on_btn_tool2_clicked() const; // 工具占位
     void on_table_view_item_clicked(const QModelIndex &index);
@@ -43,6 +43,7 @@ private:
     QStandardItemModel* table_model_;
     QTableView* table_view_;        // 表格
     DialogAddAccount* dlg_add_acc_; // 新增账号
+    DialogEditAccount* dlg_edit_acc_; // 编辑账号
 
     QToolButton* btn_data_owner_;   // 数据归属
     QToolButton* btn_tool2_;

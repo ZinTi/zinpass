@@ -17,7 +17,7 @@
 #include "common/numbered_text_edit.h"
 
 // 1/2
-class ComponentsMenuWgt final : public QWidget{
+class ComponentsMenuWgt final : public QWidget {
 public:
     explicit ComponentsMenuWgt(QWidget *parent = nullptr);
     ~ComponentsMenuWgt() override;

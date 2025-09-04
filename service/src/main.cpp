@@ -20,6 +20,7 @@ void init();    // 初始化
 [[noreturn]] void periodic_task_worker();  // 定时线程
 
 #ifdef _WIN32
+#include <winsock2.h>
 #include <windows.h>
 int WINAPI WinMain(
     HINSTANCE hInstance,

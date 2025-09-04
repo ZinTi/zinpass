@@ -159,7 +159,7 @@ public:
 
 
 private:
-    // AccountService服务的存根
+    // AccountService 服务的存根
     std::unique_ptr<account::v1::AccountService::AccountService::Stub> stub_;
 };
 

@@ -35,8 +35,7 @@ Session::Session(
     std::string data,
     std::string created_time,
     std::string expires_time,
-    std::string accessed_time)
-{
+    std::string accessed_time){
     this->id_ = std::move(id);
     this->sys_user_id_ = std::move(sys_user_id);
     this->data_ = std::move(data);

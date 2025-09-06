@@ -1,7 +1,7 @@
-#include "command_handler.h"
+#include "cli/command_handler.h"
 
 #include <iostream>
-#include "cli_command.h"
+#include "cli/cli_command.h"
 
 namespace zinpass::cli {
     int CommandHandler::handle(const std::string& rawCommand) {

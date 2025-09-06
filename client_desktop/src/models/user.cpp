@@ -1,4 +1,4 @@
-#include "user.h"
+#include "models/user.h"
 #include <iostream>
 
 namespace zinpass::models{
@@ -20,8 +20,7 @@ SystemUser::SystemUser(
     const std::string& password,
     const std::string& salt,
     const std::string& created_time,
-    const std::string& updated_time)
-{
+    const std::string& updated_time){
     id_ = id;
     username_ = username;
     nickname_ = nickname;

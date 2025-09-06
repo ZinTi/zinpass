@@ -11,12 +11,13 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QToolButton>
+#include "dlg_add_phone.h"
 
-#include "search_box.h"
-#include "phone_filter_form.h"
-#include "phone_detail_frame.h"
+#include "common/search_box.h"
+#include "phone/phone_filter_form.h"
+#include "phone/phone_detail_frame.h"
 
-class PhoneMgrForm final : public QWidget{
+class PhoneMgrForm final : public QWidget {
     Q_OBJECT
 
 public:
@@ -25,7 +26,7 @@ public:
 
 private slots:
     void on_table_view_item_clicked(const QModelIndex &index);  // 点击表格项
-    void on_btn_add_clicked();
+    void on_btn_add_clicked() const;
     void on_btn_clear_clicked() const;
 
     void list_phones();
@@ -39,6 +40,8 @@ private:
     PhoneFilterForm* filter_form_;  // 筛选控件面板
     QStandardItemModel* table_model_;
     QTableView* table_view_;        // 表格
+
+    DialogAddPhone* dlg_add_phone_;
 
     QPushButton* btn_add_;
     QPushButton* btn_clear_;

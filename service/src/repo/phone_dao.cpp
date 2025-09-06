@@ -175,8 +175,7 @@ DaoStatus MobilePhoneDAO::find_all(
     const std::string& sys_user_id,
     const std::string& telecom_operator,
     const std::string& phone_number,
-    std::vector<models::MobilePhone>& mobile_phones) const
-{
+    std::vector<models::MobilePhone>& mobile_phones) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT id,phone_number,telecom_operator,service_pwd,pin,puk,join_time,phone_area,postscript,sys_user_id,created_time,updated_time FROM mobile_phone WHERE sys_user_id = ?1 AND phone_number LIKE ?2 AND (telecom_operator LIKE ?3 OR (?4 = '' AND telecom_operator IS NULL))";
@@ -371,8 +370,7 @@ DaoStatus MobilePhoneDAO::update(
     const int id,
     const std::string& old_owner_id,
     const std::string& new_owner_id,
-    const std::string& updated_time) const
-{
+    const std::string& updated_time) const{
     if (id < 0) return DaoStatus::InvalidData;
     sqlite3* conn = pool_.get_connection();
 
@@ -440,8 +438,7 @@ DaoStatus MobilePhoneDAO::remove(const int id, const std::string& sys_user_id) c
     const int id,
     const std::string& sys_user_id,
     const int replace_id,
-    const std::string& updated_time) const
-{
+    const std::string& updated_time) const{
     if (id < 0) return DaoStatus::InvalidData;
     sqlite3* conn = pool_.get_connection();
 

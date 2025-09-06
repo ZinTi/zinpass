@@ -10,8 +10,7 @@ gRPCControlService::gRPCControlService(std::atomic<bool>& is_running_ref, const 
     :
     is_running_(is_running_ref),
     address_and_port_(host + ":" + std::to_string(port)),
-    status_svc_(is_running_ref)
-{
+    status_svc_(is_running_ref){
   //
 }
 

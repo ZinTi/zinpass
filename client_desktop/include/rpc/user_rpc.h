@@ -6,8 +6,8 @@
 #include <tuple> // 结构化绑定，避免过度设计类
 #include <grpcpp/grpcpp.h>
 
-#include "account.h"
-#include "user.grpc.pb.h"
+#include "models/account.h"
+#include "user/v1/user.grpc.pb.h"
 
 namespace zinpass::rpc{
     template<typename T>

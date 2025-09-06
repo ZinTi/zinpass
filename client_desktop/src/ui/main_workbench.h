@@ -8,21 +8,19 @@
 #include <QStackedWidget>
 #include <QHBoxLayout>
 #include "function_menu_form.h" // 功能菜单
-#include "account_mgr_form.h" // 管理账号
-#include "phone_mgr_form.h" // 管理手机号
-#include "check_pwd_security_form.h" // 检查密码安全
-#include "data_owner_form.h" // 管理数据归属
+#include "account/account_mgr_form.h" // 管理账号
+#include "phone/phone_mgr_form.h" // 管理手机号
+#include "account/check_pwd_security_form.h" // 检查密码安全
+#include "account/data_owner_form.h" // 管理数据归属
 #include "output_form.h"
 #include "input_form.h"
 #include "log_run_form.h"
 #include "log_handle_form.h"
-#include "personal_mgr_form.h" // 管理个人账号
-#include "preferences_form.h" // 注销账号
-#include "pwd_gen_dlg.h"
+#include "user/personal_mgr_form.h" // 管理个人账号
+#include "user/preferences_form.h" // 注销账号
+#include "tools/pwd_gen_dlg.h"
+#include "tools/notepad.h"
 
-namespace Ui {
-class MainWorkbench;
-}
 
 class MainWorkbench final : public QMainWindow {
     Q_OBJECT
@@ -57,8 +55,13 @@ private slots:
 
     // === 工具菜单 ===
     void onPasswdGen(); // 密码生成器
-    void onEncrypt(); // 加密
-    void onDecrypt(); // 解密
+    void onUuidGen();
+    void onEncryptDecrypt(); // 加密解密
+    void onEncodingDecoding(); // 编码解码
+    void onTimestamp(); // 时间戳
+    void onMsgSummary(); // 消息摘要
+    void onQrCode(); // 二维码
+    void onTmpNotepad(); // 临时记事本
 
     // === 帮助菜单 ===
     void onHelp(); // 帮助
@@ -108,8 +111,13 @@ private:
     QAction* action_customize_;
     // ------ 工具 ------
     QAction* action_passwd_gen_;
-    QAction* action_encrypt_;
-    QAction* action_decrypt_;
+    QAction* action_uuid_gen_;
+    QAction* action_encrypt_decrypt_;
+    QAction* action_coding_;
+    QAction* action_timestamp_;
+    QAction* action_msg_summary_;
+    QAction* action_qr_code_;
+    QAction* action_tmp_notepad_;
     // ------ 帮助 ------
     QAction* action_help_;
     QAction* action_about_;
@@ -137,7 +145,7 @@ private:
 
     AccountMgrForm* acc_mgr_form_; // 管理账号
     PhoneMgrForm* phone_mgr_form_; // 管理手机号
-    CheckPwdSecurityForm* chk_pwd_security_form_; // 管理邮箱
+    CheckPwdSecurityForm* chk_pwd_security_form_; // 检查密码安全
     DataOwnerForm* data_owner_form_; // 管理数据归属
 
     OutputForm* output_form_; // 数据导出
@@ -150,6 +158,10 @@ private:
     PreferencesForm* preferences_form_; // 偏好设置
     QWidget* session_form_; // 会话设置
 
+
+    // === 子工具窗口 ===
+    PwdGenDlg* passwd_generator_ = nullptr;
+    Notepad* notepad_ = nullptr;
 };
 
 #endif

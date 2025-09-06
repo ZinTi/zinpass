@@ -37,8 +37,8 @@ private:
     QPushButton* btn_clear_;
     QPushButton* btn_submit_;
 
-    QGroupBox* group_necessary_;
-    QGroupBox* group_other_;
+    QGroupBox* gb_necessary_;
+    QGroupBox* gb_other_;
     QVBoxLayout* lyt_main_;
     QFormLayout* lyt_necessary_;
     QFormLayout* lyt_other_;

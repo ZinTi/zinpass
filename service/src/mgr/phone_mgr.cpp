@@ -73,8 +73,7 @@ MobilePhoneManager::Return<bool> MobilePhoneManager::add_mobile_phone(
     const std::string& puk,
     const std::string& join_time,
     const std::string& phone_area,
-    const std::string& postscript)
-{
+    const std::string& postscript){
     bool ret;
     std::string message;
     const repo::MobilePhoneDAO mobile_phone_dao;
@@ -117,8 +116,7 @@ MobilePhoneManager::Return<bool> MobilePhoneManager::update_mobile_phone(
     const std::string& puk,
     const std::string& join_time,
     const std::string& phone_area,
-    const std::string& postscript)
-{
+    const std::string& postscript){
     bool ret;
     std::string message;
     const repo::MobilePhoneDAO mobile_phone_dao;

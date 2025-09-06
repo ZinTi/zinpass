@@ -30,7 +30,9 @@ set(gRPC_ROOT ${GRPC_INSTALL_DIR})
 set(Protobuf_DIR "${GRPC_INSTALL_DIR}/lib/cmake/protobuf")
 
 # 添加自定义 CMake 模块路径（包含 grpc 的 Config.cmake）
-list(APPEND CMAKE_MODULE_PATH "${GRPC_INSTALL_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH
+        "${GRPC_INSTALL_DIR}/cmake"
+)
 
 # 启用自动处理moc/uic/rcc
 set(CMAKE_AUTOUIC ON)
@@ -43,13 +45,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 查找 Qt
+# 查找 Qt、Protobuf、 gRPC
 set(QT_NO_PRIVATE_MODULE_WARNING ON)  # 抑制私有模块警告
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 # find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-
-# 查找 Protobuf 和 gRPC
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 
@@ -58,25 +58,11 @@ include_directories(
         ${OPENSSL_INCLUDE_DIR} # 添加 OpenSSL 头文件路径
         ${SQLite3_INCLUDE_DIR} # 添加 SQLite3 头文件路径
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/state
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/storage
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/rpc
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/business
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/models # 用户侧模型
-
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/common # 公共组件
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/account
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/phone
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/user
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/tools
 
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc
-        ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc/user/v1
-        ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc/account/v1
-        ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc/common/v1
-        # ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/qt/ui        # 添加头文件搜索路径
+        # ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/qt/ui
 )
 
 set(PROJECT_SOURCES
@@ -85,6 +71,7 @@ set(PROJECT_SOURCES
 
         # 2. 应用运行时状态管理层（全局变量、跨组件的共享状态、网络请求的临时上下文、当前用户对象、UI主题状态、临时缓存） state
         src/state/state_manager.cpp
+        src/state/channel_manager.cpp
 
         # 3. 本地持久化存储抽象层（用户偏好设置、本地缓存、加密的会话令牌、设备标识等）storage
         # 暂无
@@ -100,6 +87,7 @@ set(PROJECT_SOURCES
         src/business/date_time.cpp
         # src/business/pwd_utils.cpp
         src/business/pwd_generator.cpp
+        src/business/uuid_generator.cpp
 
         # 6. UI 层
         # (6.0) 资源文件
@@ -110,9 +98,8 @@ set(PROJECT_SOURCES
         src/ui/common/toast.cpp
         src/ui/common/numbered_text_edit.cpp
         src/ui/common/search_box.cpp
-        src/ui/common/dialog_auth.cpp    # 验证当前用户身份
+        src/ui/common/dlg_auth.cpp    # 验证当前用户身份
         src/ui/common/is_input_valid.cpp # 判断输入的数据是否合法-前端部分辅助验证
-        src/ui/common/widget_public_method.cpp # 部件公用方法
 
         # (6.2) 系统登录界面、系统用户注册界面
         src/ui/user/login_dlg.cpp
@@ -128,22 +115,24 @@ set(PROJECT_SOURCES
         src/ui/account/account_filter_form.cpp
         src/ui/account/account_mgr_form.cpp
         src/ui/account/popup_filter_window.cpp
-        src/ui/account/dialog_exposed_pwd.cpp # 查看明文密码的弹窗
-        src/ui/account/dialog_add_account.cpp
-        src/ui/account/dialog_edit_account.cpp
-        src/ui/account/dialog_delete_account.cpp
+        src/ui/account/dlg_exposed_pwd.cpp # 查看明文密码的弹窗
+        src/ui/account/dlg_add_account.cpp
+        src/ui/account/dlg_edit_account.cpp
+        src/ui/account/dlg_delete_account.cpp
         src/ui/account/data_owner_form.cpp
         src/ui/account/check_pwd_security_form.cpp # 安全检查页面
 
         # (6.6) 管理手机号：页面框架、增加手机号
         src/ui/phone/phone_filter_form.cpp
         src/ui/phone/phone_detail_frame.cpp
-        src/ui/phone/dialog_add_phone.cpp
+        src/ui/phone/dlg_add_phone.cpp
         src/ui/phone/phone_mgr_form.cpp
         src/ui/phone/deletion_guide_dlg.cpp
 
         # (6.7) 工具类：密码生成器、密码安全检查器、加密解密器
         src/ui/tools/pwd_gen_dlg.cpp
+        src/ui/tools/uuid_gen_dlg.cpp
+        src/ui/tools/notepad.cpp
 
         # (6.8) 迁移备份数据
         src/ui/output_form.cpp

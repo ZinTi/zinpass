@@ -6,8 +6,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 
-class SearchBox final : public QWidget
-{
+class SearchBox final : public QWidget {
     Q_OBJECT
 public:
     explicit SearchBox(QWidget *parent_ = nullptr);

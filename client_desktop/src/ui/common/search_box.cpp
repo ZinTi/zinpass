@@ -1,9 +1,8 @@
-#include "search_box.h"
+#include "common/search_box.h"
 #include <QStyle>
 
 SearchBox::SearchBox(QWidget *parent_)
-    : QWidget(parent_)
-{
+    : QWidget(parent_){
     // 初始化布局
     lyt_ = new QHBoxLayout(this);
     lyt_->setContentsMargins(0, 0, 0, 0);
@@ -29,13 +28,11 @@ SearchBox::SearchBox(QWidget *parent_)
             this, &SearchBox::on_search_button_clicked_);
 }
 
-SearchBox::~SearchBox()
-{
+SearchBox::~SearchBox(){
   // 自动释放子对象
 }
 
-void SearchBox::on_search_button_clicked_()
-{
+void SearchBox::on_search_button_clicked_(){
     if (const QString keyword_ = line_edit_->text().trimmed();
         !keyword_.isEmpty()) {
         emit search_triggered(keyword_);

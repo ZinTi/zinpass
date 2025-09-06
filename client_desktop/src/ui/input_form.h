@@ -5,8 +5,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-class InputForm final : public QWidget
-{
+class InputForm final : public QWidget {
     Q_OBJECT
 
 public:

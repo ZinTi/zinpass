@@ -1,4 +1,4 @@
-#include "preferences_form.h"
+#include "user/preferences_form.h"
 
 PreferencesForm::PreferencesForm(QWidget *parent) : QWidget(parent){
 

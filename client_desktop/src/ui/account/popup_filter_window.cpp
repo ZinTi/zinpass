@@ -1,77 +1,77 @@
-#include "popup_filter_window.h"
+#include "account/popup_filter_window.h"
 #include <QEvent>
 #include <QMouseEvent>
 #include <QDebug>
 
 
 PopupFilterWindow::PopupFilterWindow(QWidget* parent) : QWidget(parent, Qt::Popup) {
-    this->lyt_main_ = new QVBoxLayout(this);
-    this->l_title_ = new QLabel(this);
-    this->l_title_->setText(QString("更多筛选条件"));
-    this->l_title_->setStyleSheet("color: yellow; font-size: 10pt;");
-    this->l_title_->setAlignment(Qt::AlignCenter);
+    lyt_main_ = new QVBoxLayout(this);
+    l_title_ = new QLabel(this);
+    l_title_->setText(QString("更多筛选条件"));
+    l_title_->setStyleSheet("color: yellow; font-size: 10pt;");
+    l_title_->setAlignment(Qt::AlignCenter);
 
-    this->lyt_btn_ = new QHBoxLayout(this);
-    this->btn_reset_ = new QPushButton("清空", this); // 清空筛选条件的Btn
-    this->btn_reset_->setMaximumWidth(120); // 设置最大宽度
-    this->lyt_btn_->addWidget(this->btn_reset_, 0, Qt::AlignHCenter);
+    lyt_btn_ = new QHBoxLayout(this);
+    btn_reset_ = new QPushButton("清空", this); // 清空筛选条件的Btn
+    btn_reset_->setMaximumWidth(120); // 设置最大宽度
+    lyt_btn_->addWidget(btn_reset_, 0, Qt::AlignHCenter);
 
-    this->lyt_main_->addWidget(this->l_title_); // 添加 title
+    lyt_main_->addWidget(l_title_); // 添加 title
 
     // 创建筛选控件
-    this->l_url_ = new QLabel("网址", this);
-    this->e_url_ = new QLineEdit(this);
-    this->e_url_->setEnabled(false);
+    l_url_ = new QLabel("网址", this);
+    e_url_ = new QLineEdit(this);
+    e_url_->setEnabled(false);
 
-    this->l_hotline_ = new QLabel("客服热线", this);
-    this->e_hotline_ = new QLineEdit(this);
-    this->e_hotline_->setEnabled(false);
+    l_hotline_ = new QLabel("客服热线", this);
+    e_hotline_ = new QLineEdit(this);
+    e_hotline_->setEnabled(false);
 
-    this->l_sub_acc_ = new QLabel("子账号", this);
-    this->e_sub_acc_ = new QLineEdit(this);
-    this->e_sub_acc_->setEnabled(false);
+    l_sub_acc_ = new QLabel("子账号", this);
+    e_sub_acc_ = new QLineEdit(this);
+    e_sub_acc_->setEnabled(false);
 
-    this->l_cdt_range_ = new QLabel("创建时间范围", this);
-    this->e_cdt_range_start_ = new QDateTimeEdit(this);
-    this->e_cdt_range_start_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
-    this->e_cdt_range_start_->setCalendarPopup(true);
-    this->e_cdt_range_start_->setEnabled(false);
-    this->e_cdt_range_end_ = new QDateTimeEdit(this);
-    this->e_cdt_range_end_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
-    this->e_cdt_range_end_->setCalendarPopup(true);
-    this->e_cdt_range_end_->setEnabled(false);
+    l_cdt_range_ = new QLabel("创建时间范围", this);
+    e_cdt_range_start_ = new QDateTimeEdit(this);
+    e_cdt_range_start_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
+    e_cdt_range_start_->setCalendarPopup(true);
+    e_cdt_range_start_->setEnabled(false);
+    e_cdt_range_end_ = new QDateTimeEdit(this);
+    e_cdt_range_end_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
+    e_cdt_range_end_->setCalendarPopup(true);
+    e_cdt_range_end_->setEnabled(false);
 
-    this->l_udt_range_ = new QLabel("修改时间范围", this);
-    this->e_udt_range_start_ = new QDateTimeEdit(this);
-    this->e_udt_range_start_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
-    this->e_udt_range_start_->setCalendarPopup(true);
-    this->e_udt_range_start_->setEnabled(false);
-    this->e_udt_range_end_ = new QDateTimeEdit(this);
-    this->e_udt_range_end_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
-    this->e_udt_range_end_->setCalendarPopup(true);
-    this->e_udt_range_end_->setEnabled(false);
-    this->e_udt_range_end_->setDateTime(QDateTime::currentDateTime()); // 设置当前时间
+    l_udt_range_ = new QLabel("修改时间范围", this);
+    e_udt_range_start_ = new QDateTimeEdit(this);
+    e_udt_range_start_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
+    e_udt_range_start_->setCalendarPopup(true);
+    e_udt_range_start_->setEnabled(false);
+    e_udt_range_end_ = new QDateTimeEdit(this);
+    e_udt_range_end_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
+    e_udt_range_end_->setCalendarPopup(true);
+    e_udt_range_end_->setEnabled(false);
+    e_udt_range_end_->setDateTime(QDateTime::currentDateTime()); // 设置当前时间
 
     // 日期输入框布局
-    this->lyt_cdt_range_ = new QVBoxLayout(this);
-    this->lyt_cdt_range_->addWidget(this->e_cdt_range_start_);
-    this->lyt_cdt_range_->addWidget(this->e_cdt_range_end_);
-    this->lyt_udt_range_ = new QVBoxLayout(this);
-    this->lyt_udt_range_->addWidget(this->e_udt_range_start_);
-    this->lyt_udt_range_->addWidget(this->e_udt_range_end_);
+    lyt_cdt_range_ = new QVBoxLayout(this);
+    lyt_cdt_range_->addWidget(e_cdt_range_start_);
+    lyt_cdt_range_->addWidget(e_cdt_range_end_);
+    lyt_udt_range_ = new QVBoxLayout(this);
+    lyt_udt_range_->addWidget(e_udt_range_start_);
+    lyt_udt_range_->addWidget(e_udt_range_end_);
 
     // 使用 QFormLayout 布局筛选控件
-    this->lyt_filter_ = new QFormLayout(this);
-    this->lyt_filter_->addRow(this->l_url_, this->e_url_);
-    this->lyt_filter_->addRow(this->l_hotline_, this->e_hotline_);
-    this->lyt_filter_->addRow(this->l_sub_acc_, this->e_sub_acc_);
-    this->lyt_filter_->addRow(this->l_cdt_range_, this->lyt_cdt_range_);
-    this->lyt_filter_->addRow(this->l_udt_range_, this->lyt_udt_range_);
+    lyt_filter_ = new QFormLayout(this);
+    lyt_filter_->addRow(l_url_, e_url_);
+    lyt_filter_->addRow(l_hotline_, e_hotline_);
+    lyt_filter_->addRow(l_sub_acc_, e_sub_acc_);
+    lyt_filter_->addRow(l_cdt_range_, lyt_cdt_range_);
+    lyt_filter_->addRow(l_udt_range_, lyt_udt_range_);
 
-    this->lyt_main_->addLayout(this->lyt_filter_); // 添加 this->lyt_filter_
-    this->lyt_main_->addLayout(this->lyt_btn_); // 添加包含 btn_reset_ 的水平布局容器
+    lyt_main_->addLayout(lyt_filter_); // 添加 lyt_filter_
+    lyt_main_->addLayout(lyt_btn_); // 添加包含 btn_reset_ 的水平布局容器
 
-    setLayout(this->lyt_main_);
+    setLayout(lyt_main_);
 }
 
 PopupFilterWindow::~PopupFilterWindow(){

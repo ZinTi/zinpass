@@ -5,7 +5,7 @@
 // #include <map>
 #include <vector>
 #include <grpcpp/grpcpp.h>
-#include "telecom.grpc.pb.h"
+#include "account/v1/telecom.grpc.pb.h"
 
 namespace zinpass::rpc{
 

@@ -1,6 +1,6 @@
-#include "read_eval_print_loop.h"
+#include "cli/read_eval_print_loop.h"
 #include <iostream>
-#include "command_handler.h"
+#include "cli/command_handler.h"
 
 namespace zinpass::cli {
     ReadEvalPrintLoop::ReadEvalPrintLoop() {

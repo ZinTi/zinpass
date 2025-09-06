@@ -1,4 +1,4 @@
-#include "category_rpc.h"
+#include "rpc/category_rpc.h"
 
 namespace zinpass::rpc{
 

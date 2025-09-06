@@ -1,4 +1,4 @@
-#include "prompt.h"
+#include "cli/prompt.h"
 #include <iostream>
 
 #define USERNAME_DEFAULT "root"

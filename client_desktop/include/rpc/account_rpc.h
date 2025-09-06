@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <grpcpp/grpcpp.h>
-#include "account.grpc.pb.h"
-#include "view_account.h"
+#include "account/v1/account.grpc.pb.h"
+#include "models/view_account.h"
 
 namespace zinpass::rpc{
 
@@ -159,7 +159,7 @@ public:
 
 
 private:
-    // AccountService服务的存根
+    // AccountService 服务的存根
     std::unique_ptr<account::v1::AccountService::AccountService::Stub> stub_;
 };
 

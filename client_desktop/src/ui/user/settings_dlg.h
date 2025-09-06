@@ -43,7 +43,7 @@ private:
     QLineEdit* e_ip_address_;
     QLineEdit* e_port_;
 
-    QButtonGroup* btn_group_theme_;
+    QButtonGroup* bg_theme_;
     QRadioButton* btn_dark_mode_; // 深色主题开关
     QRadioButton* btn_light_mode_; // 浅色主题开关
     QRadioButton* btn_system_mode_; // 跟随系统主题开关

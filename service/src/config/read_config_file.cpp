@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #ifdef _WIN32
+#include <winsock2.h>
 #include <windows.h>
 #else
 #include <unistd.h>

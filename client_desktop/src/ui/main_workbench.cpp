@@ -1,6 +1,9 @@
 #include "main_workbench.h"
 #include <QMessageBox>
 
+#include "tools/notepad.h"
+#include "tools/uuid_gen_dlg.h"
+
 MainWorkbench::MainWorkbench(QWidget* parent) : QMainWindow(parent) {
     setup_ui();
 
@@ -52,9 +55,9 @@ void MainWorkbench::setup_ui() {
     // 4. 创建功能菜单（左侧）和堆叠部件（右侧）
     this->func_menu_form_ = new FunctionMenuForm(this);
     this->right_stacked_widget_ = new QStackedWidget(this);  // 堆叠部件
-    this->lyt_main_ = new QHBoxLayout(this->central_widget_);
-    this->lyt_main_->addWidget(this->func_menu_form_);
-    this->lyt_main_->addWidget(this->right_stacked_widget_);
+    lyt_main_ = new QHBoxLayout(this->central_widget_);
+    lyt_main_->addWidget(this->func_menu_form_);
+    lyt_main_->addWidget(this->right_stacked_widget_);
 
     page_data_mgr_ = new QTabWidget(this->right_stacked_widget_); // 数据管理-选项卡部件
     page_transfer_ = new QTabWidget(this->right_stacked_widget_); // 迁移备份-选项卡部件
@@ -73,8 +76,8 @@ void MainWorkbench::setup_ui() {
     page_setting_init();
 
     // 设置拉伸因子，第一个参数是要设置的索引，第二个参数是拉伸因子
-    // this->lyt_main_->setStretch(0, 1); // 给 this->func_menu_form_ 设置拉伸因子为 1
-    this->lyt_main_->setStretch(1, 5); // 给 this->right_stacked_widget_ 设置拉伸因子为 5
+    // lyt_main_->setStretch(0, 1); // 给 this->func_menu_form_ 设置拉伸因子为 1
+    lyt_main_->setStretch(1, 5); // 给 this->right_stacked_widget_ 设置拉伸因子为 5
 
     this->setStatusBar(this->status_bar_);
 
@@ -91,105 +94,125 @@ void MainWorkbench::create_menus() {
 }
 
 void MainWorkbench::setup_menu_file() {
-    this->action_new_file_ = new QAction("新建(N)", this);
-    this->action_new_file_->setShortcut(QKeySequence::New);
-    connect(this->action_new_file_, &QAction::triggered, this, &MainWorkbench::onNew);
+    action_new_file_ = new QAction("新建(N)", this);
+    action_new_file_->setShortcut(QKeySequence::New);
+    connect(action_new_file_, &QAction::triggered, this, &MainWorkbench::onNew);
 
-    this->action_open_file_ = new QAction("打开(O)", this);
-    this->action_open_file_->setShortcut(QKeySequence::Open);
-    connect(this->action_open_file_, &QAction::triggered, this, &MainWorkbench::onOpen);
+    action_open_file_ = new QAction("打开(O)", this);
+    action_open_file_->setShortcut(QKeySequence::Open);
+    connect(action_open_file_, &QAction::triggered, this, &MainWorkbench::onOpen);
 
-    this->action_save_file_ = new QAction("保存(S)", this);
-    this->action_save_file_->setShortcut(QKeySequence::Save);
-    connect(this->action_save_file_, &QAction::triggered, this, &MainWorkbench::onSave);
+    action_save_file_ = new QAction("保存(S)", this);
+    action_save_file_->setShortcut(QKeySequence::Save);
+    connect(action_save_file_, &QAction::triggered, this, &MainWorkbench::onSave);
 
-    this->action_exit_ = new QAction("退出(X)", this);
-    this->action_exit_->setShortcut(QKeySequence::Quit);
-    connect(this->action_exit_, &QAction::triggered, qApp, &QApplication::quit);
+    action_exit_ = new QAction("退出(X)", this);
+    action_exit_->setShortcut(QKeySequence::Quit);
+    connect(action_exit_, &QAction::triggered, qApp, &QApplication::quit);
 
-    this->menu_file_->addAction(this->action_new_file_);
-    this->menu_file_->addAction(this->action_open_file_);
-    this->menu_file_->addAction(this->action_save_file_);
+    this->menu_file_->addAction(action_new_file_);
+    this->menu_file_->addAction(action_open_file_);
+    this->menu_file_->addAction(action_save_file_);
     this->menu_file_->addSeparator();
-    this->menu_file_->addAction(this->action_exit_);
+    this->menu_file_->addAction(action_exit_);
 }
 void MainWorkbench::setup_menu_edit() {
-    this->action_copy_ = new QAction("复制(C)", this);
-    this->action_copy_->setShortcut(QKeySequence::Copy);
-    connect(this->action_copy_, &QAction::triggered, this, &MainWorkbench::onCopy);
+    action_copy_ = new QAction("复制(C)", this);
+    action_copy_->setShortcut(QKeySequence::Copy);
+    connect(action_copy_, &QAction::triggered, this, &MainWorkbench::onCopy);
 
-    this->action_paste_ = new QAction("粘贴(P)", this);
-    this->action_paste_->setShortcut(QKeySequence::Paste);
-    connect(this->action_paste_, &QAction::triggered, this, &MainWorkbench::onPaste);
+    action_paste_ = new QAction("粘贴(P)", this);
+    action_paste_->setShortcut(QKeySequence::Paste);
+    connect(action_paste_, &QAction::triggered, this, &MainWorkbench::onPaste);
 
-    this->action_cut_ = new QAction("剪切(T)", this);
-    this->action_cut_->setShortcut(QKeySequence::Cut);
-    connect(this->action_cut_, &QAction::triggered, this, &MainWorkbench::onCut);
+    action_cut_ = new QAction("剪切(T)", this);
+    action_cut_->setShortcut(QKeySequence::Cut);
+    connect(action_cut_, &QAction::triggered, this, &MainWorkbench::onCut);
 
-    this->menu_edit_->addAction(this->action_copy_);
-    this->menu_edit_->addAction(this->action_paste_);
-    this->menu_edit_->addAction(this->action_cut_);
+    this->menu_edit_->addAction(action_copy_);
+    this->menu_edit_->addAction(action_paste_);
+    this->menu_edit_->addAction(action_cut_);
 }
 void MainWorkbench::setup_menu_view() {
-    this->action_zoom_in_ = new QAction("放大(I)", this);
-    this->action_zoom_in_->setShortcut(QKeySequence::ZoomIn);
-    connect(this->action_zoom_in_, &QAction::triggered, this, &MainWorkbench::onZoomIn);
+    action_zoom_in_ = new QAction("放大(I)", this);
+    action_zoom_in_->setShortcut(QKeySequence::ZoomIn);
+    connect(action_zoom_in_, &QAction::triggered, this, &MainWorkbench::onZoomIn);
 
-    this->action_zoom_out_ = new QAction("缩小(O)", this);
-    this->action_zoom_out_->setShortcut(QKeySequence::ZoomOut);
-    connect(this->action_zoom_out_, &QAction::triggered, this, &MainWorkbench::onZoomOut);
+    action_zoom_out_ = new QAction("缩小(O)", this);
+    action_zoom_out_->setShortcut(QKeySequence::ZoomOut);
+    connect(action_zoom_out_, &QAction::triggered, this, &MainWorkbench::onZoomOut);
 
-    this->action_reset_zoom_ = new QAction("重置(R)", this);
-    this->action_reset_zoom_->setShortcut(tr("Ctrl+0"));
-    connect(this->action_reset_zoom_, &QAction::triggered, this, &MainWorkbench::onResetZoom);
+    action_reset_zoom_ = new QAction("重置(R)", this);
+    action_reset_zoom_->setShortcut(tr("Ctrl+0"));
+    connect(action_reset_zoom_, &QAction::triggered, this, &MainWorkbench::onResetZoom);
 
-    this->menu_view_->addAction(this->action_zoom_in_);
-    this->menu_view_->addAction(this->action_zoom_out_);
-    this->menu_view_->addAction(this->action_reset_zoom_);
+    this->menu_view_->addAction(action_zoom_in_);
+    this->menu_view_->addAction(action_zoom_out_);
+    this->menu_view_->addAction(action_reset_zoom_);
 }
 void MainWorkbench::setup_menu_setting() {
-    this->action_options_ = new QAction("选项", this);
-    connect(this->action_options_, &QAction::triggered, this, &MainWorkbench::onOptions);
+    action_options_ = new QAction("选项", this);
+    connect(action_options_, &QAction::triggered, this, &MainWorkbench::onOptions);
 
-    this->action_preferences_ = new QAction("首选项", this);
-    connect(this->action_preferences_, &QAction::triggered, this, &MainWorkbench::onPreferences);
+    action_preferences_ = new QAction("首选项", this);
+    connect(action_preferences_, &QAction::triggered, this, &MainWorkbench::onPreferences);
 
-    this->action_customize_ = new QAction("个性化", this);
-    connect(this->action_customize_, &QAction::triggered, this, &MainWorkbench::onCustomize);
+    action_customize_ = new QAction("个性化", this);
+    connect(action_customize_, &QAction::triggered, this, &MainWorkbench::onCustomize);
 
-    this->menu_setting_->addAction(this->action_options_);
-    this->menu_setting_->addAction(this->action_preferences_);
-    this->menu_setting_->addAction(this->action_customize_);
+    this->menu_setting_->addAction(action_options_);
+    this->menu_setting_->addAction(action_preferences_);
+    this->menu_setting_->addAction(action_customize_);
 }
 void MainWorkbench::setup_menu_tools() {
-    this->action_passwd_gen_ = new QAction("密码生成器", this);
-    connect(this->action_passwd_gen_, &QAction::triggered, this, &MainWorkbench::onPasswdGen);
+    action_passwd_gen_ = new QAction("随机密码", this);
+    connect(action_passwd_gen_, &QAction::triggered, this, &MainWorkbench::onPasswdGen);
 
-    this->action_encrypt_ = new QAction("加密", this);
-    connect(this->action_encrypt_, &QAction::triggered, this, &MainWorkbench::onEncrypt);
+    action_uuid_gen_ = new QAction("UUID", this);
+    connect(action_uuid_gen_, &QAction::triggered, this, &MainWorkbench::onUuidGen);
 
-    this->action_decrypt_ = new QAction("解密", this);
-    connect(this->action_decrypt_, &QAction::triggered, this, &MainWorkbench::onDecrypt);
+    action_encrypt_decrypt_ = new QAction("加密解密", this);
+    connect(action_encrypt_decrypt_, &QAction::triggered, this, &MainWorkbench::onEncryptDecrypt);
 
-    this->menu_tools_->addAction(this->action_passwd_gen_);
-    this->menu_tools_->addAction(this->action_encrypt_);
-    this->menu_tools_->addAction(this->action_decrypt_);
+    action_coding_ = new QAction("编码解码", this);
+    connect(action_coding_, &QAction::triggered, this, &MainWorkbench::onEncodingDecoding);
+
+    action_timestamp_ = new QAction("时间戳", this);
+    connect(action_timestamp_, &QAction::triggered, this, &MainWorkbench::onTimestamp);
+
+    action_msg_summary_ = new QAction("消息摘要", this);
+    connect(action_msg_summary_, &QAction::triggered, this, &MainWorkbench::onMsgSummary);
+
+    action_qr_code_ = new QAction("二维码生成", this);
+    connect(action_qr_code_, &QAction::triggered, this, &MainWorkbench::onQrCode);
+
+    action_tmp_notepad_ = new QAction("临时记事本", this);
+    connect(action_tmp_notepad_, &QAction::triggered, this, &MainWorkbench::onTmpNotepad);
+
+    this->menu_tools_->addAction(action_passwd_gen_);
+    this->menu_tools_->addAction(action_uuid_gen_);
+    this->menu_tools_->addAction(action_encrypt_decrypt_);
+    this->menu_tools_->addAction(action_coding_);
+    this->menu_tools_->addAction(action_timestamp_);
+    this->menu_tools_->addAction(action_msg_summary_);
+    this->menu_tools_->addAction(action_qr_code_);
+    this->menu_tools_->addAction(action_tmp_notepad_);
 }
 void MainWorkbench::setup_menu_help() {
-    this->action_help_ = new QAction("帮助", this);
-    this->action_help_->setShortcut(QKeySequence::HelpContents);
-    connect(this->action_help_, &QAction::triggered, this, &MainWorkbench::onHelp);
+    action_help_ = new QAction("帮助", this);
+    action_help_->setShortcut(QKeySequence::HelpContents);
+    connect(action_help_, &QAction::triggered, this, &MainWorkbench::onHelp);
 
-    this->action_about_ = new QAction("关于", this);
-    connect(this->action_about_, &QAction::triggered, this, &MainWorkbench::onAbout);
+    action_about_ = new QAction("关于", this);
+    connect(action_about_, &QAction::triggered, this, &MainWorkbench::onAbout);
 
-    this->action_update_ = new QAction("检查更新", this);
-    connect(this->action_update_, &QAction::triggered, this, &MainWorkbench::onCheckUpdates);
+    action_update_ = new QAction("检查更新", this);
+    connect(action_update_, &QAction::triggered, this, &MainWorkbench::onCheckUpdates);
 
-    this->menu_help_->addAction(this->action_help_);
-    this->menu_help_->addAction(this->action_update_);
+    this->menu_help_->addAction(action_help_);
+    this->menu_help_->addAction(action_update_);
     this->menu_help_->addSeparator();
-    this->menu_help_->addAction(this->action_about_);
+    this->menu_help_->addAction(action_about_);
 }
 
 void MainWorkbench::handle_menu_select(const int index){
@@ -319,14 +342,35 @@ void MainWorkbench::onCustomize() {
 
 // ================= 工具菜单槽函数实现 =================
 void MainWorkbench::onPasswdGen() {
-    auto* passwd_generator = new PwdGenDlg(this);
-    passwd_generator->show();
+    if (!this->passwd_generator_) {
+        this->passwd_generator_ = new PwdGenDlg(this);
+    }
+    this->passwd_generator_->show();
 }
-void MainWorkbench::onEncrypt() {
-    QMessageBox::information(this, "加密", "打开加密工具");
+void MainWorkbench::onUuidGen() {
+    auto* uuid_generator = new UuidGenDlg(this);
+    uuid_generator->show();
 }
-void MainWorkbench::onDecrypt() {
-    QMessageBox::information(this, "解密", "打开解密工具");
+void MainWorkbench::onEncryptDecrypt() {
+    QMessageBox::information(this, "加解密工具", "打开加密解密工具");
+}
+void MainWorkbench::onEncodingDecoding() {
+    QMessageBox::information(this, "编解码工具", "打开工具");
+}
+void MainWorkbench::onTimestamp() {
+    QMessageBox::information(this, "时间戳格式化与解析", "打开工具");
+}
+void MainWorkbench::onMsgSummary() {
+    QMessageBox::information(this, "消息摘要", "打开工具");
+}
+void MainWorkbench::onQrCode() {
+    QMessageBox::information(this, "二维码生成与解析", "打开工具");
+}
+void MainWorkbench::onTmpNotepad() {
+    if (!this->notepad_) {
+        this->notepad_ = new Notepad(nullptr);
+    }
+    this->notepad_->show();
 }
 
 // ================= 帮助菜单槽函数实现 =================

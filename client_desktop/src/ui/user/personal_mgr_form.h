@@ -10,7 +10,7 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 
-class PersonalMgrForm final : public QWidget{
+class PersonalMgrForm final : public QWidget {
     Q_OBJECT
 
 public:

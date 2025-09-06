@@ -1,4 +1,4 @@
-#include "account.h"
+#include "models/account.h"
 
 namespace zinpass::models {
     Account::Account() {

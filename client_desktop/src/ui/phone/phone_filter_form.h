@@ -13,7 +13,7 @@
 #include <QVBoxLayout>
 #include <QFormLayout>
 
-class PhoneFilterForm final : public QWidget{
+class PhoneFilterForm final : public QWidget {
     Q_OBJECT
 
 public:

@@ -135,8 +135,7 @@ AccountManager::Return<bool> AccountManager::add_account(
     const std::string& url,
     const std::string& hotline,
     const std::string& sys_user_id,
-    const std::string& category)
-{
+    const std::string& category){
     // 0. 定义变量
 
     // 1. 校验参数数据合法性
@@ -213,8 +212,7 @@ AccountManager::Return<bool> AccountManager::add_account(
 AccountManager::Return<bool> AccountManager::add_view_account(
     const std::string& main_key,
     models::ViewAccount& view_account,
-    const std::string& plaintext_pwd)
-{
+    const std::string& plaintext_pwd){
     // 0. 定义变量
     const std::string current_date_time = utils::DateTime::getCurrentDateTime();
 
@@ -253,8 +251,7 @@ AccountManager::Return<bool> AccountManager::add_view_account(
 AccountManager::Return<bool> AccountManager::update_account(
     const models::ViewAccount& view_account,
     const std::string& plaintext_pwd,
-    const std::string& main_key)
-{
+    const std::string& main_key){
     // 0. 定义变量
     const std::string current_date_time = utils::DateTime::getCurrentDateTime();
     repo::AccountDAO account_dao;
@@ -345,8 +342,7 @@ bool AccountManager::re_encrypt_password(
     const std::string& account_id,
     const std::string& sys_user_id,
     const std::string& old_main_key,
-    const std::string& new_main_key)
-{
+    const std::string& new_main_key){
     // 0. 检查输入数据的合法性、定义变量
     if (account_id.empty() || sys_user_id.empty() || old_main_key.empty() || new_main_key.empty()) {
         return false;

@@ -1,4 +1,4 @@
-#include "pwd_generator.h"
+#include "business/pwd_generator.h"
 #include <stdexcept>
 
 // 定义密码组成成分，在此定义避免污染全局命名空间

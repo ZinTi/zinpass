@@ -182,8 +182,7 @@ DaoStatus AccountDAO::find(
     const std::string& category,
     const std::string& postscript,
     const std::string& sys_user_id,
-    std::vector<models::ViewAccount>& view_accounts) const
-{
+    std::vector<models::ViewAccount>& view_accounts) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT * FROM view_account WHERE "
@@ -254,8 +253,7 @@ DaoStatus AccountDAO::find(
 }
 
 DaoStatus AccountDAO::findEncryptedPwdAndIv(const std::string& id, const std::string& sys_user_id,
-    std::vector<unsigned char>& encrypted_pwd, std::vector<unsigned char>& iv) const
-{
+    std::vector<unsigned char>& encrypted_pwd, std::vector<unsigned char>& iv) const{
     sqlite3* conn = pool_.get_connection();
 
     sqlite3_stmt* stmt = nullptr;
@@ -637,8 +635,7 @@ DaoStatus AccountDAO::update_password(const std::string& id,
     const std::string& sys_user_id,
     const std::vector<unsigned char>& encrypted_pwd,
     const std::vector<unsigned char>& iv,
-    const std::string& update_time) const
-{
+    const std::string& update_time) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "UPDATE account SET encrypted_pwd = ?, iv = ?, updated_time = ? WHERE id = ? AND sys_user_id = ?";
@@ -693,8 +690,7 @@ DaoStatus AccountDAO::update_platform(
     const std::string& platform_name,
     const std::string& url,
     const std::string& hotline,
-    const std::string& update_time) const
-{
+    const std::string& update_time) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "UPDATE account SET provider_name = ?, platform_name = ?, URL = ?, hotline = ?, updated_time = ? WHERE id = ?";
@@ -746,8 +742,7 @@ DaoStatus AccountDAO::update_user(
     const std::vector<unsigned char>& encrypted_pwd,
     const std::vector<unsigned char>& iv,
     const short category_id,
-    const std::string& update_time) const
-{
+    const std::string& update_time) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "UPDATE account SET username = ?, nickname = ?, encrypted_pwd = ?, iv = ?, category_id = ?, updated_time = ? WHERE id = ?";
@@ -806,8 +801,7 @@ DaoStatus AccountDAO::update_third(
     const std::string& id,
     const int phone_id,
     const std::string& email_id,
-    const std::string& update_time) const
-{
+    const std::string& update_time) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "UPDATE account SET phone_id = ?, email_id = ?, updated_time = ? WHERE id = ?";
@@ -851,8 +845,7 @@ DaoStatus AccountDAO::update_other(
     const std::string& id,
     const std::string& sub_account,
     const std::string& postscript,
-    const std::string& update_time) const
-{
+    const std::string& update_time) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "UPDATE account SET sub_account = ?, postscript = ?, updated_time = ? WHERE id = ?";
@@ -892,8 +885,7 @@ DaoStatus AccountDAO::update_other(
 // 此版本方法有很多BUG，不要使用
 DaoStatus AccountDAO::update(
     const std::vector<KeyValuePair>& data,
-    const std::string& id) const
-{
+    const std::string& id) const{
     sqlite3* conn = pool_.get_connection();
 
     std::stringstream sqlStream;
@@ -1154,8 +1146,7 @@ DaoStatus AccountDAO::remove(const std::string& id) const {
 // Email 部分（特殊的 Account）
 DaoStatus AccountDAO::findEmailList(
     const std::string& sys_user_id,
-    std::vector<std::string>& email_addresses) const
-{
+    std::vector<std::string>& email_addresses) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT username FROM view_email WHERE sys_user_id = ?";

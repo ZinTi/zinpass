@@ -11,19 +11,22 @@
   zinpassctl         # 进入 REPL 交互模式
 
  */
-#include "read_eval_print_loop.h"
-#include "cli_command.h"
 #include <iostream>
 #if defined(_WIN32)
     #include "windows.h"
 #endif
 
+#include "cli/read_eval_print_loop.h"
+#include "cli/cli_command.h"
+#include "cli/prompt.h"
+#include "state/channel_manager.h"
+
 using namespace zinpass;
 
+void init(void);
+
 int main(int argc, char* argv[]){
-#if defined(_WIN32)
-    SetConsoleCP(65001) && SetConsoleOutputCP(65001);
-#endif
+    init();
 
     cli::CliCommand::version(true);
     std::cout << "Enter \"help\" for usage hints." << std::endl;
@@ -34,4 +37,11 @@ int main(int argc, char* argv[]){
     cli::ReadEvalPrintLoop REPL;
     REPL.run();
     return 0;
+}
+
+void init(void) {
+#if defined(_WIN32)
+    SetConsoleCP(65001) && SetConsoleOutputCP(65001);
+#endif
+    state::ChannelManager::get_instance().initialize("localhost:50052");    // 初始化通道管理器
 }

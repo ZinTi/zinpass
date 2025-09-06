@@ -10,8 +10,7 @@
 
 namespace zinpass::utils{
 
-class PwdUtils
-{
+class PwdUtils{
 public:
     PwdUtils();
 

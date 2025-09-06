@@ -25,4 +25,10 @@
         <file>fonts/JetBrainsMonoNL-Italic.ttf</file>
         <file>fonts/JetBrainsMonoNL-Regular.ttf</file>
     </qresource>
+    <qresource prefix="/tools">
+        <file>svg/copy.svg</file>
+        <file>svg/download.svg</file>
+        <file>svg/hyphen.svg</file>
+        <file>svg/no_hyphen.svg</file>
+    </qresource>
 </RCC>

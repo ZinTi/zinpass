@@ -2,8 +2,9 @@
 #include <QDir>
 #include <QMessageBox>
 
-#include "state_manager.h"
-#include "login_dlg.h"
+#include "state/state_manager.h"
+#include "state/channel_manager.h"
+#include "user/login_dlg.h"
 #include "main_workbench.h"
 #include "common/font_util.h"
 
@@ -54,12 +55,14 @@ int main(int argc, char *argv[]){
 
 void init() {
     // 检测客户端根路径（依据当前程序所在目录的父目录）
-    const QString executablePath = QCoreApplication::applicationDirPath();
-    if (QDir dir(executablePath); dir.cdUp()) {
-        const std::string clientRootPath = dir.absolutePath().toStdString();
-        auto& state = state::StateManager::instance();
-        state.setClientRootPath(clientRootPath);    // 设置当前客户端路径
+    const QString executable_path = QCoreApplication::applicationDirPath();
+    if (QDir dir(executable_path); dir.cdUp()) {
+        const std::string client_root_path = dir.absolutePath().toStdString();
+        auto& state_mgr = state::StateManager::instance();
+        state_mgr.setClientRootPath(client_root_path);    // 设置当前客户端路径
     } else {
         // "Failed to get parent directory";
     }
+
+    zinpass::state::ChannelManager::get_instance().initialize("localhost:50051");
 }

@@ -1,9 +1,9 @@
-#include "cli_command.h"
-#include "status_rpc.h"
+#include "cli/cli_command.h"
 #include <cstdlib>
 #include <iostream>
-
-#include <prompt.h>
+#include "state/channel_manager.h"
+#include "rpc/status_rpc.h"
+#include <cli/prompt.h>
 
 #define TEMPORARY_CONTROL_KEY "test-key"
 
@@ -18,7 +18,7 @@ void CliCommand::clear(){
 }
 
 void CliCommand::copyleft() {
-    const auto channel = grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials());
+    const auto channel = zinpass::state::ChannelManager::get_instance().get_channel();
     const rpc::StatusRPC status_rpc(channel);
     const std::string copyleft = status_rpc.get_copyleft(TEMPORARY_CONTROL_KEY);
     std::cout << copyleft << std::endl;
@@ -61,7 +61,7 @@ void CliCommand::reload(){
     std::cout << "当前功能尚未实现" << std::endl;
 }
 void CliCommand::restart(){
-    const auto channel = grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials());
+    const auto channel = zinpass::state::ChannelManager::get_instance().get_channel();
     const rpc::StatusRPC status_rpc(channel);
     const auto[result_restart, message_restart] = status_rpc.restart(TEMPORARY_CONTROL_KEY);
     std::cout << message_restart << std::endl;
@@ -72,7 +72,7 @@ void CliCommand::start(){
 }
 
 void CliCommand::status(){
-    const auto channel = grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials());
+    const auto channel = zinpass::state::ChannelManager::get_instance().get_channel();
     const rpc::StatusRPC status_rpc(channel);
     const std::string executable_path = status_rpc.get_executable_path(TEMPORARY_CONTROL_KEY);
     const std::string database_path = status_rpc.get_database_path(TEMPORARY_CONTROL_KEY);
@@ -80,13 +80,13 @@ void CliCommand::status(){
     std::cout << "Database path: " << database_path << std::endl;
 }
 void CliCommand::stop(){
-    const auto channel = grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials());
+    const auto channel = zinpass::state::ChannelManager::get_instance().get_channel();
     const rpc::StatusRPC status_rpc(channel);
     const auto[result_stop, message_stop] = status_rpc.shutdown(TEMPORARY_CONTROL_KEY);
     std::cout << message_stop << std::endl;
 }
 void CliCommand::version(const bool verbose){
-    const auto channel = grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials());
+    const auto channel = zinpass::state::ChannelManager::get_instance().get_channel();
     const rpc::StatusRPC status_rpc(channel);
     std::string version;
     if (verbose) {

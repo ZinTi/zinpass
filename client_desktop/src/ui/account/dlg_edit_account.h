@@ -12,7 +12,6 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include "dlg_exposed_pwd.h"
-#include "dlg_delete_account.h"
 
 class DialogEditAccount final : public QDialog {
     Q_OBJECT
@@ -29,7 +28,6 @@ signals:
 
 private slots:
     void on_btn_read_passwd_clicked() const;
-    void on_btn_delete_clicked() const;
     void on_btn_submit_clicked();
 
     void update_edit_main_key_state() const;
@@ -67,11 +65,6 @@ private:
     QPushButton* btn_read_passwd_;
     QPushButton* btn_edit_;
     QPushButton* btn_submit_;
-    QPushButton* btn_delete_;
-
-    // 子对话框
-    DialogExposedPwd* dlg_exposed_pwd_;
-    DialogDeleteAccount* dlg_delete_acc_;
 
     QVBoxLayout* lyt_main_;
     QGridLayout* lyt_grid_; // 创建网格布局

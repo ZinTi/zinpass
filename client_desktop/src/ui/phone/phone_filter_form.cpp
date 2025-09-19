@@ -60,7 +60,7 @@ void PhoneFilterForm::setup_ui(){
 
     // 连接信号槽
     connect(btn_refresh_, &QPushButton::clicked, this, &PhoneFilterForm::on_btn_refresh_clicked);
-    connect(btn_submit_, &QPushButton::clicked, this, &PhoneFilterForm::form_submitted);
+    connect(btn_submit_, &QPushButton::clicked, this, &PhoneFilterForm::sig_form_submitted);
 }
 
 void PhoneFilterForm::initial_input_widgets() const {

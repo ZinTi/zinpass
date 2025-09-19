@@ -9,6 +9,7 @@
 #include "models/view_account.h"
 
 // RPC 封装
+#include "dlg_delete_account.h"
 #include "rpc/account_rpc.h"
 #include "common/toast.h"
 
@@ -47,9 +48,11 @@ void AccountMgrForm::setup_ui(){
     btn_data_owner_->setText("数据归属");
     btn_tool2_ = new QToolButton(this); // 工具占位按键
     btn_tool2_->setText("工具占位");
-    btn_read_passwd_ = new QPushButton("查看密码", this);  // 查看密码
-    btn_add_account_ = new QPushButton("新增", this);  // 新增
-    btn_detail_and_edit_ = new QPushButton("详情与编辑", this);  // 编辑（更新/删除）
+    btn_read_passwd_ = new QPushButton("查看密码", this);
+    btn_add_account_ = new QPushButton("新增", this);
+    btn_detail_and_edit_ = new QPushButton("详情与编辑", this);
+    btn_transfer_ = new QPushButton("转移", this);
+    btn_delete_ = new QPushButton("删除", this);
 
     dlg_add_acc_ = new DialogAddAccount(this);
     dlg_add_acc_->setWindowTitle(QString("新增账号密码"));
@@ -72,6 +75,8 @@ void AccountMgrForm::setup_ui(){
     lyt_bottom_btn_->addWidget(btn_read_passwd_);
     lyt_bottom_btn_->addWidget(btn_add_account_);
     lyt_bottom_btn_->addWidget(btn_detail_and_edit_);
+    lyt_bottom_btn_->addWidget(btn_transfer_);
+    lyt_bottom_btn_->addWidget(btn_delete_);
     // lyt_bottom_btn_->addSpacing(30);
     lyt_bottom_btn_->addStretch();
     lyt_bottom_btn_->addWidget(btn_tool2_);
@@ -99,6 +104,8 @@ void AccountMgrForm::setup_ui(){
     connect(btn_read_passwd_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_read_passwd_clicked);
     connect(btn_add_account_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_add_account_clicked);
     connect(btn_detail_and_edit_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_detail_and_edit_clicked);
+    connect(btn_transfer_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_transfer_clicked);
+    connect(btn_delete_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_delete_clicked);
     connect(table_view_, &QTableView::clicked, this, &AccountMgrForm::on_table_view_item_clicked);
 }
 
@@ -235,46 +242,57 @@ void AccountMgrForm::on_btn_detail_and_edit_clicked() const {
     }
 }
 
-void AccountMgrForm::on_btn_remove_account_clicked() {
-    /*
-    QString destId;
-    const int rowCount = ui->tableWidgetAccount->rowCount();
-    if (row_tableW < rowCount) {
-        destId = ui->tableWidgetAccount->item(row_tableW, 0)->text();
-    }
-    else {
-        ui->coordViewer->setTextColor(QColor::fromRgbF(255, 100, 0, 1.0));
-        ui->coordViewer->setText("表格中无数据！请先查询");
+void AccountMgrForm::on_btn_transfer_clicked() {
+    QMessageBox::information(this, "提示", "功能暂未实现！");
+}
+void AccountMgrForm::on_btn_delete_clicked() {
+    if(table_model_->rowCount() <= this->row_of_table_view_) {
+        Toast::showToast((QWidget*)this, "表格中无数据！请先查询", 3000, QColor(200, 0, 200, 220), Qt::white);
         return;
     }
-    AuthDlg authDlg;
-    if (authDlg.exec() == QDialog::Accepted) {} else { return; } // 二次鉴权
-*/
 
-    /*
-
-    const auto accountMgr = new AccountManager();
-    std::string msg;
-    const bool result = accountMgr->deleteAccount(msg, destId.toInt());
-    delete accountMgr;
-    if(result){
-        QMessageBox::information(this, QString::fromStdString("删除账号" + destId.toStdString() +"成功"), QString::fromStdString(msg));
-    }else{
-        QMessageBox::warning(this, QString::fromStdString("删除账号" + destId.toStdString() + "失败"), QString::fromStdString(msg));
+    const QItemSelectionModel* select = this->table_view_->selectionModel();
+    if (!select->hasSelection()) {
+        Toast::showToast((QWidget*)this, "请先选择要删除的行", 3000, QColor(200, 0, 200, 220), Qt::white);
+        return;
     }
-    // 删除用户后在ui->tableWidget中也删除那一行（相当于刷新操作，无需再次从数据库中查询）
-    if(ui->tableWidgetAccount->item(row_tableW, 0)->text() == destId){ // 若还是这行（未因其他操作篡改）则直接删除
-        ui->tableWidgetAccount->removeRow(row_tableW);
-    }else{ // 否则找一下再删
-        // bool found = false;
-        for (int i = 0; i < rowCount; ++i) {
-            if (ui->tableWidgetAccount->item(i, 0)->text() == destId) {
-                ui->tableWidgetAccount->removeRow(i);
-                // found = true;
-                break;
+
+    const QStandardItem* item_column0 = table_model_->item(this->row_of_table_view_, 0);
+    if (item_column0) {
+        const QVariant data = item_column0->data(Qt::DisplayRole);
+        const std::string account_id = data.toString().toStdString();
+
+        DialogDeleteAccount dlg_delete_acc(account_id);
+        connect(&dlg_delete_acc, &DialogDeleteAccount::remove_result, this, [&](bool success) {
+            if (success) { // 删除请求成功，刷新表格
+                // 从表格模型中移除对应的行
+                table_model_->removeRow(row_of_table_view_);
+
+                // 更新选中行索引
+                if (row_of_table_view_ >= table_model_->rowCount()) {
+                    row_of_table_view_ = table_model_->rowCount() - 1;
+                }
+
+                // 更新坐标显示器
+                if (table_model_->rowCount() > 0) {
+                    QModelIndex index = table_model_->index(row_of_table_view_, 0);
+                    coord_viewer_->setTextColor(QColor::fromRgbF(0, 100, 255, 1.0));
+                    coord_viewer_->setText(QString("已选中ID: %1").arg(table_model_->data(index).toString()));
+                } else {
+                    coord_viewer_->setTextColor(QColor::fromRgbF(255, 100, 0, 1.0));
+                    coord_viewer_->setText("没有找到符合的记录");
+                }
+            } else { // 删除请求失败
+                qDebug() << "操作失败";
             }
+        });
+
+        if(QDialog::Accepted == dlg_delete_acc.exec()){ // 确定按钮且操作成功时会进入这里
+            qDebug() << "对话框被接受";
+        } else { // 取消按钮或操作失败时会进入这里
+            qDebug() << "对话框被拒绝";
         }
-    }*/
+    }
 }
 
 void AccountMgrForm::on_btn_tool2_clicked() const {

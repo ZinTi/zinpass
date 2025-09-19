@@ -24,7 +24,8 @@ public:
     void fetch_phone_by_id(int id) const;
 
 signals:
-    void form_submitted();
+    void sig_form_submitted();
+    void sig_update_table();
 
 private slots:
     void on_btn_submit_clicked();

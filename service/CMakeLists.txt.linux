@@ -20,18 +20,18 @@ else()
 endif()
 
 # 设置依赖库搜索路径（完整路径、环境变量或缓存变量）
-list(APPEND CMAKE_PREFIX_PATH
-        "A:/applib/grpc-1.71.0-amd64-win-mingw64"    # gRPC-1.71.0
-        "A:/applib/openssl-win64-mingw"              # OpenSSL-3.5.0 (若 gRPC 库中内置的 OpenSSL冲突了，则注释掉此行)
-        "A:/applib/boost-msys2-mingw64"              # Boost-1.88
-        "A:/applib/sqlite-v3.50.0-windows-amd64"     # SQLite-3.50.0 (libsqlite3.a)
-)
+#list(APPEND CMAKE_PREFIX_PATH
+#        "A:/applib/grpc-1.71.0-amd64-win-mingw64"    # gRPC-1.71.0
+#        "A:/applib/openssl-win64-mingw"              # OpenSSL-3.5.0 (若 gRPC 库中内置的 OpenSSL冲突了，则注释掉此行)
+#        "A:/applib/boost-msys2-mingw64"              # Boost-1.88
+#        "A:/applib/sqlite-v3.50.0-windows-amd64"     # SQLite-3.50.0 (libsqlite3.a)
+#)
 
 # 查找依赖包
-find_package(OpenSSL 3.5.0 REQUIRED)
-find_package(Protobuf CONFIG REQUIRED)
-find_package(gRPC CONFIG REQUIRED)
-find_package(Boost 1.88 REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(Protobuf REQUIRED)
+find_package(gRPC REQUIRED)
+find_package(Boost REQUIRED)
 find_package(SQLite3 REQUIRED)
 
 # 设置 C++ 标准
@@ -39,7 +39,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 指定Boost头文件库路径
-set(BOOST_HEADER_ONLY_DIR "A:/applib/boost-msys2-mingw64/include/boost-1_88")
+# set(BOOST_HEADER_ONLY_DIR "A:/applib/boost-msys2-mingw64/include/boost-1_88")
 
 # 设置变量，包含项目文件
 set(PROJECT_SOURCES
@@ -127,7 +127,7 @@ add_executable(zinpass_service
 # 设置输出文件名
 set_target_properties(zinpass_service PROPERTIES
         OUTPUT_NAME "${EXECUTABLE_NAME}"
-        LINK_FLAGS "-static -Wl,-s"
+        LINK_FLAGS "-Wl,-s"
 )
 
 # 包含头文件目录（在add_executable、add_library之后）

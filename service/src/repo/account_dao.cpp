@@ -4,6 +4,7 @@
 #include "repo/common/sql_debug.h"
 #include <map>
 #include <sstream>
+#include <stdexcept>
 #include "utils/uuid_generator.h"
 #include "models/view_account.h"
 
@@ -1117,6 +1118,10 @@ DaoStatus AccountDAO::update(
 }
 
 DaoStatus AccountDAO::remove(const std::string& id) const {
+    if (id.empty()) {
+        throw std::invalid_argument("AccountDAO::remove: Empty ID");
+    }
+
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "DELETE FROM account WHERE id = ?";
@@ -1127,7 +1132,7 @@ DaoStatus AccountDAO::remove(const std::string& id) const {
         pool_.release_connection(conn);
         return DaoStatus::InvalidData;
     }
-    sqlite3_bind_text(stmt, 1, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT); // NOT NULL
+    sqlite3_bind_text(stmt, 1, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT);
 
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_DONE != sqlite3_step(stmt)) {

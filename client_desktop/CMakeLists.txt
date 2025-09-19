@@ -6,6 +6,9 @@ if(NOT DEFINED ZINPASS_VERSION)
 endif()
 project(client_desktop VERSION ${ZINPASS_VERSION} LANGUAGES CXX)
 
+set(COMPONENT_NAME "client")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROGRAM_NAME}-${COMPONENT_NAME}-v${ZINPASS_VERSION}-${OS_NAME}-${ARCH_NAME}-${TOOLCHAIN_NAME}/bin)
+
 # 设置平台相关变量
 if(WIN32)
     set(EXECUTABLE_NAME "zinpass")
@@ -17,12 +20,12 @@ endif()
 
 # 设置库路径（mingw64静态库）
 set(CMAKE_PREFIX_PATH
-        "A:/build/qt-6.9.0-win64-mingw64-static"    # Qt 6.9.0 mingw64 static (for release)
-        "A:/build/grpc-1.71.0-amd64-win-mingw64"
+        "A:/applib/qt-6.9.0-win64-mingw64-static"    # Qt 6.9.0 mingw64 static (for release)
+        "A:/applib/grpc-1.71.0-amd64-win-mingw64"
 )
 
 # 设置 gRPC 和 Protobuf 的根目录
-set(GRPC_INSTALL_DIR "A:/build/grpc-1.71.0-amd64-win-mingw64")
+set(GRPC_INSTALL_DIR "A:/applib/grpc-1.71.0-amd64-win-mingw64")
 set(Protobuf_ROOT ${GRPC_INSTALL_DIR})
 set(gRPC_ROOT ${GRPC_INSTALL_DIR})
 

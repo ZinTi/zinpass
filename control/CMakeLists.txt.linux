@@ -10,13 +10,13 @@ set(COMPONENT_NAME "server")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROGRAM_NAME}-${COMPONENT_NAME}-v${ZINPASS_VERSION}-${OS_NAME}-${ARCH_NAME}-${TOOLCHAIN_NAME}/bin)
 
 # 设置依赖库搜索路径（完整路径、环境变量或缓存变量）
-list(APPEND CMAKE_PREFIX_PATH
-        "A:/applib/grpc-1.71.0-amd64-win-mingw64"    # gRPC-1.71.0
-)
+# list(APPEND CMAKE_PREFIX_PATH
+#         "A:/applib/grpc-1.71.0-amd64-win-mingw64"    # gRPC-1.71.0
+# )
 
 # 查找依赖包
-find_package(Protobuf CONFIG REQUIRED)
-find_package(gRPC CONFIG REQUIRED)
+find_package(Protobuf REQUIRED)
+find_package(gRPC REQUIRED)
 
 # 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 17)

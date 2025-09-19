@@ -1,16 +1,14 @@
 """
-编译 .proto 文件生成 gRPC 桩代码的脚本
+编译 .proto 文件生成 gRPC 桩代码的脚本（Linux系统专用）
 
 命令行参数：
-protoc.py <grpc_home_path> [-c COMPONENTS]
-python protoc.py <grpc_home_path> [-c COMPONENTS]
+python protoc.py [-c COMPONENTS]
 
 参数说明：
-grpc_home_path: GRPC安装目录路径
 -c/--components: 三位二进制字符串，控制要编译的组件（service/control/client），默认111（全部编译）
 
 例如：
-python protoc.py "D:\applib\grpc-1.71.0-amd64-win-mingw64" -c 111
+python protoc.py -c 101
 """
 
 import os
@@ -59,16 +57,13 @@ def run_protoc(protoc_path, arguments, component_name):
 
 def main():
     # 解析参数
-    parser = argparse.ArgumentParser(description='编译.proto文件生成gRPC桩代码')
-    parser.add_argument('grpc_home_path', help='GRPC安装目录路径')
+    parser = argparse.ArgumentParser(description='编译.proto文件生成gRPC桩代码（Linux系统专用）')
     parser.add_argument('-c', '--components',
                         type=validate_components,
                         default='111',
                         help='三位二进制控制要编译的组件（service/control/client），例如101表示编译service和client')
     args = parser.parse_args()
 
-    # 使用参数
-    print(f"gRPC安装目录: {args.grpc_home_path}")
     print(f"编译组件设置: {args.components} (service:{args.components[0]}, control:{args.components[1]}, client:{args.components[2]})")
 
     # 获取项目根目录
@@ -76,14 +71,16 @@ def main():
     PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
     print(f"项目根目录: {PROJECT_ROOT}")
 
-    # 设置gRPC路径
-    GRPC_INSTALL_DIR = args.grpc_home_path
-    protoc_path = os.path.join(GRPC_INSTALL_DIR, "bin", "protoc.exe")
-    grpc_cpp_plugin_path = os.path.join(GRPC_INSTALL_DIR, "bin", "grpc_cpp_plugin.exe")
+    # 使用Linux标准路径
+    protoc_path = "/usr/bin/protoc"
+    grpc_cpp_plugin_path = "/usr/bin/grpc_cpp_plugin"
 
     # 验证protoc是否存在
     if not os.path.exists(protoc_path):
         print(f"错误: 未找到protoc可执行文件: {protoc_path}")
+        sys.exit(1)
+    if not os.path.exists(grpc_cpp_plugin_path):
+        print(f"错误: 未找到grpc_cpp_plugin可执行文件: {grpc_cpp_plugin_path}")
         sys.exit(1)
 
     # 准备目录路径
@@ -103,8 +100,8 @@ def main():
     # 公共参数
     common_args = [
         "-I=" + protos_src_base_dir,
-        "-I=" + os.path.join(GRPC_INSTALL_DIR, "include", "google", "protobuf"),
-        "--plugin=protoc-gen-grpc=" + grpc_cpp_plugin_path
+        "-I=/usr/include",  # 使用系统标准include路径
+        f"--plugin=protoc-gen-grpc={grpc_cpp_plugin_path}"
     ]
 
     # 定义各组件参数
@@ -142,9 +139,9 @@ def main():
     # 1. 编译Service组件
     if args.components[0] == '1':
         service_args = [
-                           "--grpc_out=" + target_dir_service,
-                           "--cpp_out=" + target_dir_service
-                       ] + common_args + service_protos
+            f"--grpc_out={target_dir_service}",
+            f"--cpp_out={target_dir_service}"
+        ] + common_args + service_protos
 
         if not run_protoc(protoc_path, service_args, "1. Service组件"):
             success = False
@@ -152,9 +149,9 @@ def main():
     # 2. 编译Control组件
     if args.components[1] == '1':
         control_args = [
-                           "--grpc_out=" + target_dir_control,
-                           "--cpp_out=" + target_dir_control
-                       ] + common_args + control_protos
+            f"--grpc_out={target_dir_control}",
+            f"--cpp_out={target_dir_control}"
+        ] + common_args + control_protos
 
         if not run_protoc(protoc_path, control_args, "2. Control组件"):
             success = False
@@ -162,9 +159,9 @@ def main():
     # 3. 编译Client组件
     if args.components[2] == '1':
         client_args = [
-                          "--grpc_out=" + target_dir_client,
-                          "--cpp_out=" + target_dir_client
-                      ] + common_args + client_protos
+            f"--grpc_out={target_dir_client}",
+            f"--cpp_out={target_dir_client}"
+        ] + common_args + client_protos
 
         if not run_protoc(protoc_path, client_args, "3. Client组件"):
             success = False

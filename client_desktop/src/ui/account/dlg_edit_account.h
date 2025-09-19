@@ -70,7 +70,6 @@ private:
     QPushButton* btn_delete_;
 
     // 子对话框
-    DialogExposedPwd* dlg_exposed_pwd_;
     DialogDeleteAccount* dlg_delete_acc_;
 
     QVBoxLayout* lyt_main_;

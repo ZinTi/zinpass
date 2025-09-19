@@ -13,7 +13,6 @@ DialogEditAccount::DialogEditAccount(const std::string& account_id, QWidget* par
     setup_ui();
     initial_input_widgets(); // 初始化输入控件
     // 初始化子对话框
-    dlg_exposed_pwd_ = new DialogExposedPwd(this->account_id_, this);
     dlg_delete_acc_ = new DialogDeleteAccount(this->account_id_, this);
 }
 
@@ -222,8 +221,9 @@ void DialogEditAccount::read_only(const bool enable) const {
 }
 
 void DialogEditAccount::on_btn_read_passwd_clicked() const {
-    dlg_exposed_pwd_->setWindowTitle(QString("查看密码(%1)").arg(this->account_id_));
-    dlg_exposed_pwd_->exec();
+    DialogExposedPwd dlg_exposed_pwd(this->account_id_);
+    dlg_exposed_pwd.setWindowTitle(QString("查看密码(%1)").arg(this->account_id_));
+    dlg_exposed_pwd.exec();
 }
 
 void DialogEditAccount::on_btn_delete_clicked() const {

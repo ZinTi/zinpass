@@ -1,86 +1,83 @@
-# ZinPass 密码管理器 v0.0.1
+# ZinPass 密码管理器
 
 <div style="text-align: center;">
     <img src="./docs/images/social_preview.png" alt="logo && slogan" height="200" />
     <p style="font-style: italic; font-size: smaller;">ZinPass is a lightweight password manager built with C++ and Qt6 Widgets, designed to securely store and manage your passwords with a clean and intuitive interface.</p>
 </div>
 
-## 📇 一、简介
+## 🗂️ Contents - 目录
+- [ZinPass 密码管理器](#zinpass-密码管理器)
+  - [🗂️ Contents - 目录](#️-contents---目录)
+  - [🛡️ 一、简介](#️-一简介)
+  - [🛠️ 二、构建与安装](#️-二构建与安装)
+  - [⚙️ 三、使用](#️-三使用)
+  - [⚡ 四、重要说明](#-四重要说明)
+    - [数据使用](#数据使用)
+    - [项目开发](#项目开发)
+  - [©️ 五、版权与免责声明](#️-五版权与免责声明)
+    - [许可协议 License](#许可协议-license)
+    - [免责声明](#免责声明)
+
+## 🛡️ 一、简介
 ZinPass 是一款轻量级密码管理器，分为三部分：
-- 客户端：`zinpass` 负责前端交互，使用 Qt6 框架 Widget 开发
-- 服务端：`zinpasssvc` 负责后端数据处理，使用 gRPC 与 前端以及命令行工具通信，使用 SQLite3 存储数据，使用 OpenSSL 加密数据（目前版本只加密密码字段，后续版本将改为加密整个文件）。
-- 服务端命令行交互工具：`zinpassctl` 负责监控和控制服务端后台进程。服务端没有控制台和图形化界面，监控和控制需要此工具。
-这个程序只实现了少数几个最基本的功能，还有很多功能未实现，目前没啥精力更新，且每次更新大概率都是破坏性更新，完全不保证向后兼容，甚至不保证向前兼容。
+- `zinpass` 客户端，负责客户端交互，使用 Qt6 Widget 开发
+- `zinpasssvc` / `zinpassd` 服务端，部署在 Linux 上为守护进程，负责后端数据处理，使用 gRPC 通信，使用 SQLite3 存储数据，使用 OpenSSL 加密数据（目前版本只加密密码字段）。
+- `zinpassctl` 管理工具，负责监控和控制服务端后台进程。服务端没有控制台和图形化界面，监控和控制需要此工具。  
 
-***
+![架构图](docs/diagram_projects/software_architecture.svg)
 
-## 🛠️ 二、构建
-使用 CMake + MinGW-w64 构建，C++ 17 标准，构建前先运行 protoc.py 脚本生成 gRPC 的桩代码，然后再构建。
+---
 
-依赖以下库：
-- Qt 6.9
-- gRPC (含 protoc 工具)
-- SQLite3
-- OpenSSL 3.0.15
-- Boost
+## 🛠️ 二、构建与安装
 
-***
+本软件区分服务端和客户端，请根据自己的需求选择合适的版本进行部署和安装。  
+
+- 若你没有个人服务器，只希望本地运行，例如安装在 *Windows x86_64* 平台的电脑上使用，请选择下载 *Windows x86_64* 版本的服务端程序 `zinpasssvc.exe` 和客户端程序 `zinpass.exe`，按照推荐的目录结构安装部署。 
+
+- 若你有个人服务器，例如 *Debian, Ubuntu, Fedora, CentOS, etc*，希望随时随地管理个人数据，可下载 *Linux x86_64* 版本的服务端程序 `zinpassd` 部署在服务器上，搭配 Windows 版本的 `zinpass.exe` 使用（假设你的笔记本电脑是 *Windows* 的）。或者根据你的使用需求自由搭配。
+
+- 你可以根据服务端需要的 *API* 自行开发一个 `Web` 应用部署在服务器上，这样就可以通过网页的形式随时随地管理个人数据。需要注意的是，通信使用 *gRPC* 。后续我可能会实现这个功能。
+
+注意：请你自行解决网络问题，确保服务器与客户端能正常通信（服务器公网 IP 或同一局域网内，开放防火墙和端口）。
+
+请点击 [构建与安装](docs/build.md) 查阅构建与安装部署说明。
 
 ## ⚙️ 三、使用
 
-***
+请点击 [使用手册](docs/user_manual/main.md) 查阅使用手册。
 
-1、运行 `zinpasssvc` 启动服务端后台进程。因运行在后台，所以不会显示任何控制台或图形界面，这是正常现象。
+## ⚡ 四、重要说明
 
-2、启动 `zinpass` 客户端，登录或注册账号使用。登录界面如图 3-1 所示，账号处会自动列出所有已存在的用户名，请选择用户名，然后输入密码登录。
+### 数据使用
+- 密码数据完全由用户自行管理，开发者不会收集任何用户信息。若用户担心数据泄露风险，可将服务端和客户端部署在同一主机上，并限制服务端仅监听本机地址的请求，拦截外部请求。 
 
-<div style="flex: 1; text-align: center;">
-    <img src="./docs/images/running_01_login.png" alt="login" style="max-width: 180px; height: 220px;" />
-    <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-1 登录界面</figcaption>
-</div>
+- 若服务端和客户端部署在同一主机上，建议用户及时备份数据，直接备份 `zinpass.db` 这个文件就行。但是目前版本不太稳定，不保证兼容前一版本，备份 `zinpass.db` 文件前请同时记录 `zinpass.db` 是配套哪个版本的软件。
 
-3、注册账号如图 3-2 所示，输入用户名、密码、确认密码、昵称等信息，点击注册按钮完成注册。
+### 项目开发
+- 这个程序只实现了少数几个最基本的功能，还有很多功能未实现。
+- 目前没啥精力更新，且每次更新大概率都是破坏性更新，完全不保证向后兼容，甚至不保证向前兼容。
+- 有时候生产环境的版本的代码也可能越修复 BUG 越多，勉强使用，不保证修复时效。
+- 若存在故障，可提交 issue 到 GitHub，或邮件留言。
 
-4、若用户需要关闭 `zinpasssvc` 进程，需要使用 `zinpassctl` 工具，在该工具的交互命令中，输入 `stop` 命令即可通知服务器停止服务。
+## ©️ 五、版权与免责声明
 
-<div style="flex: 1; text-align: center;">
-    <img src="./docs/images/running_02_signup.png" alt="signup" style="max-width: 180px; height: 220px;" />
-    <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-2 注册界面</figcaption>
-</div>
+### 许可协议 License  
 
-5、登录成功后即进入工作台界面，在工作台界面进行各种操作。工作台顶部为菜单栏，左侧为功能导航区，右侧为工作区。如图 3-3 所示。
+- 本项目基于 **[GNU General Public License v3.0](LICENSE)** 开源协议发布。您可以自由地使用、修改和分发本软件，但必须遵循该协议的规定。  
 
-<figure style="text-align: center;">
-  <img src="./docs/images/running_03_main_workbench.png" alt="workbench" width="320" />
-  <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-3 工作台界面</figcaption>
-</figure>
+> GNU GPLv3 的**唯一官方版本**是由自由软件基金会（*FSF*）发布的[英文原版](https://www.gnu.org/licenses/gpl-3.0.en.html)。
+> 任何其他语言的翻译，包括中文，都被视为“非官方”（unofficial）或“非授权”（unauthorized）的版本。它们在法律上不具有与英文原版同等的效力。
 
-6、需要注意的是，会话超时自动过期，会话过期时查询不到任何数据，客户端也不会提示会话过期，请自行退出重新登录（这一问题是设计缺陷，将在后续版本中解决）。
+- 此处提供由 *[开放原子开源基金会（OpenAtom）](https://www.openatom.org/)* 发布或组织翻译的 **非官方中文翻译** **[GNU GPL v.3.0 - 阮坤良 [简体]](docs/license_translation/LICENSE.zh-CN.KunliangLuan)** 和 **[GNU GPL v.3.0 - 卫剑钒 [人话版]](docs/license_translation/LICENSE.zh-CN.JianfanWei.md)** ，仅供参考。如果翻译版本与英文原版有任何冲突，以英文原版为准。
 
-7、在工作台界面顶部菜单栏中，预留了一些菜单项，这些菜单项暂时没有实现，但保留了位置，以供以后扩展。其中 工具栏 - 密码生成器 功能已经实现，所以此处以密码生成器功能为例，展示一下其功能界面。如图 3-4 所示。
+### 免责声明
 
-<figure style="text-align: center;">
-  <img src="./docs/images/running_04_password_generator.png" alt="password generator" width="320" />
-  <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-4 工具-密码生成器</figcaption>
-</figure>
+- 使用者在使用本软件时，必须**严格遵守其所在国家/地区的法律法规**，并承担因使用本软件而产生的一切法律责任。
 
-8、密码生成器功能支持生成随机密码，你可以指定密码长度、生成数量、包含的字符类型（数字、大小写字母与特殊字符），根据需要选择不同参数生成密码。可以点击命令行模式，提供了另一个独立的随机密码生成器的程序，即 `bin/pwdgen` 程序。
+- **严禁**将本软件用于任何非法目的。开发者**概不负责**因使用者违法使用本软件而造成的任何后果。
 
-9、查看密码功能示例，支持 “查看 | 复制 | 查看并复制” 三种方式。查看密码后仅显示几秒钟，如图 3-5 所示。这样设计的目的是，有时候用户查看完密码，但来不及/忘记关闭窗口，此时屏幕可能会被恶意程序或不法分子窥窃到，因此设计了一个倒计时，且时间比较短。推荐使用复制功能，复制功能不会明文显示密码，可以粘贴到其他地方使用。不过复制也存在被其他程序读取粘贴板的风险，后续版本将会实现一个隔离的粘贴板，以防止数据泄露。
+- 本软件按“原样”提供，**不提供任何形式的明示或暗示担保**，包括但不限于对适销性、特定用途适用性的担保。使用本软件所造成的一切**数据丢失、财产损失或任何其他风险**，均由使用者自行承担。
 
-<figure style="text-align: center;">
-  <img src="./docs/images/running_05_fetch_passwd.png" alt="fetch password" width="320" />
-  <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-5 读取密码</figcaption>
-</figure>
-
-10、密码数据不上传任何其他服务器，不会收集任何用户信息，虽然设计为客户端/服务器架构，但服务器可设计仅监听本机地址的请求，拦截外部请求，客户端也不会向任何其他网络服务器发送任何数据，一切都运行在本地主机，确保安全。
-
-11、推荐用户要备份数据，直接备份 `zinpass.db` 这个文件就行，但是因为在发布正式版本之前，都不保证兼容前一版本，备份 `zinpass.db` 文件前请同时记录 `zinpass.db` 是配套哪个版本的软件。
-
-12、本软件遵循 GPLv3 协议，任何人都可以自由使用、修改、分发本软件，但任何人修改后的软件都必须以 GPLv3 协议开源。若存在故障，请提交 issue 到 GitHub。
-
-***
-
-
-
+---
+END
 

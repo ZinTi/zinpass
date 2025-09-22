@@ -301,7 +301,7 @@ grpc::Status AccountServiceImpl::DeleteAccount(ServerContext *context, const acc
     }
 
     // 3. 删除操作
-    const std::string& account_id = request->account_id();
+    const std::string account_id = request->account_id();
     const auto[ret_delete, message_delete] = business::AccountManager::delete_account(account_id);
     response->set_result(ret_delete);
     response->set_message(message_delete);

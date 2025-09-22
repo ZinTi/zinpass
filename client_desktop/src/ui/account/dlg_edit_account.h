@@ -12,7 +12,6 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include "dlg_exposed_pwd.h"
-#include "dlg_delete_account.h"
 
 class DialogEditAccount final : public QDialog {
     Q_OBJECT
@@ -68,9 +67,6 @@ private:
     QPushButton* btn_edit_;
     QPushButton* btn_submit_;
     QPushButton* btn_delete_;
-
-    // 子对话框
-    DialogDeleteAccount* dlg_delete_acc_;
 
     QVBoxLayout* lyt_main_;
     QGridLayout* lyt_grid_; // 创建网格布局

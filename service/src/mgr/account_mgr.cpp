@@ -4,6 +4,9 @@
 #include "utils/date_time.h"
 #include "repo/phone_dao.h"
 #include "utils/pwd_utils.h"
+#include <stdexcept>
+
+#include "utils/log_manager.h"
 
 namespace zinpass::business{
 
@@ -419,13 +422,19 @@ std::tuple<int, int, std::vector<std::string>> AccountManager::re_encrypt_passwo
 
 
 AccountManager::Return<bool> AccountManager::delete_account(const std::string& account_id) {
-    const repo::AccountDAO account_dao;
-    if (const repo::DaoStatus ret_account_dao = account_dao.remove(account_id);
-        repo::DaoStatus::Success != ret_account_dao)
-    {
-        return {false, "删除失败：" + std::to_string(static_cast<int>(ret_account_dao))};
+    try {
+        const repo::AccountDAO account_dao;
+        const repo::DaoStatus ret_account_dao = account_dao.remove(account_id);
+        if (repo::DaoStatus::Success != ret_account_dao) {
+            return {false, "删除失败：" + std::to_string(static_cast<int>(ret_account_dao))};
+        }
+        return {true, "删除成功"};
+    } catch (const std::invalid_argument& e) {
+        utils::LogManager::AddLog(std::string("[ERROR] Invalid argument when deleting account: ") + e.what());
+    } catch (const std::exception& e) {
+        utils::LogManager::AddLog(std::string("[ERROR] Exception when deleting account: ") + e.what());
     }
-    return {true, "删除成功"};
+    return {false, "删除失败"};
 }
 
 } // zinpass::mgr

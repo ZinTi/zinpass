@@ -3,6 +3,7 @@
 #include "state/state_manager.h"
 #include "state/channel_manager.h"
 #include <QMessageBox>
+#include "dlg_delete_account.h"
 // RPC 封装
 #include "rpc/account_rpc.h"
 #include "rpc/phone_rpc.h"
@@ -12,8 +13,6 @@ DialogEditAccount::DialogEditAccount(const std::string& account_id, QWidget* par
     // 创建主窗口的中心部件
     setup_ui();
     initial_input_widgets(); // 初始化输入控件
-    // 初始化子对话框
-    dlg_delete_acc_ = new DialogDeleteAccount(this->account_id_, this);
 }
 
 DialogEditAccount::~DialogEditAccount() {
@@ -227,7 +226,8 @@ void DialogEditAccount::on_btn_read_passwd_clicked() const {
 }
 
 void DialogEditAccount::on_btn_delete_clicked() const {
-    if(QDialog::Accepted == dlg_delete_acc_->exec()){
+    DialogDeleteAccount dlg_delete_acc(this->account_id_);
+    if(QDialog::Accepted == dlg_delete_acc.exec()){
         qDebug() << "测试";
     }else{
         return;

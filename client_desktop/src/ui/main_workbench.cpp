@@ -38,7 +38,7 @@ void MainWorkbench::setup_ui() {
         "background-color: rgb(100, 30, 100);"
         );
     QFont menu_font_ = this->menu_bar_->font();
-    menu_font_.setPointSize(6);
+    menu_font_.setPointSize(12);
     menu_bar_->setFont(menu_font_);
     this->setMenuBar(this->menu_bar_);
     create_menus();

@@ -28,7 +28,7 @@ private slots:
     void on_btn_read_passwd_clicked(); // 查询和显示明文密码
     void on_btn_add_account_clicked() const; // 增加密码记录
     void on_btn_detail_and_edit_clicked() const; // 更新记录
-    void on_btn_remove_account_clicked();  // 删除密码记录
+    void on_btn_delete_clicked();
     void on_btn_tool2_clicked() const; // 工具占位
     void on_table_view_item_clicked(const QModelIndex &index);
 
@@ -50,6 +50,7 @@ private:
     QPushButton* btn_read_passwd_;  // 查看密码
     QPushButton* btn_add_account_;  // 新增
     QPushButton* btn_detail_and_edit_;  // 详情与编辑
+    QPushButton* btn_delete_;       // 删除
 
     int row_of_table_view_ = 0; // 聚焦行
     int column_of_table_view_ = 0;  // 聚焦列

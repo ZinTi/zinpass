@@ -19,12 +19,15 @@ public:
     std::string get_input_main_key() const;
 
 private slots:
-    void on_btn_okay_clicked();
+    void on_btn_confirm_clicked();
+
+signals:
+    void remove_result(bool success);
 
 private:
     QLabel* lbl_main_key_;
     QLineEdit* edit_main_key_;
-    QPushButton* btn_okay_;
+    QPushButton* btn_confirm_;
     QPushButton* btn_cancel_;
 
     std::string account_id_;

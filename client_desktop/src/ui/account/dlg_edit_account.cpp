@@ -126,13 +126,11 @@ void DialogEditAccount::setup_ui(){
     btn_read_passwd_ = new QPushButton("查看密码", this);
     btn_edit_ = new QPushButton("编辑", this);
     btn_submit_ = new QPushButton("提交", this);
-    btn_delete_ = new QPushButton("删除", this);
     lyt_action_->addLayout(lyt_key_);
     lyt_action_->addWidget(btn_refresh_);
     lyt_action_->addWidget(btn_read_passwd_);
     lyt_action_->addWidget(btn_edit_);
     lyt_action_->addWidget(btn_submit_);
-    lyt_action_->addWidget(btn_delete_);
 
     // 连接信号槽
     connect(btn_refresh_, &QPushButton::clicked, this, &DialogEditAccount::initial_input_widgets);
@@ -142,7 +140,6 @@ void DialogEditAccount::setup_ui(){
     });
     // connect(btn_submit_, &QPushButton::clicked, this, &DialogEditAccount::form_submitted);
     connect(btn_submit_, &QPushButton::clicked, this, &DialogEditAccount::on_btn_submit_clicked);
-    connect(btn_delete_, &QPushButton::clicked, this, &DialogEditAccount::on_btn_delete_clicked);
 
     // 当edit_password_不为空时启用edit_main_key_;
     connect(edit_password_, &QLineEdit::textChanged, this, &DialogEditAccount::update_edit_main_key_state);
@@ -223,15 +220,6 @@ void DialogEditAccount::on_btn_read_passwd_clicked() const {
     DialogExposedPwd dlg_exposed_pwd(this->account_id_);
     dlg_exposed_pwd.setWindowTitle(QString("查看密码(%1)").arg(this->account_id_));
     dlg_exposed_pwd.exec();
-}
-
-void DialogEditAccount::on_btn_delete_clicked() const {
-    DialogDeleteAccount dlg_delete_acc(this->account_id_);
-    if(QDialog::Accepted == dlg_delete_acc.exec()){
-        qDebug() << "测试";
-    }else{
-        return;
-    }
 }
 
 QMap<QString, QVariant> DialogEditAccount::get_form_data() const{

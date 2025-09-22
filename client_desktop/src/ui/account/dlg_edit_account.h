@@ -28,7 +28,6 @@ signals:
 
 private slots:
     void on_btn_read_passwd_clicked() const;
-    void on_btn_delete_clicked() const;
     void on_btn_submit_clicked();
 
     void update_edit_main_key_state() const;
@@ -66,7 +65,6 @@ private:
     QPushButton* btn_read_passwd_;
     QPushButton* btn_edit_;
     QPushButton* btn_submit_;
-    QPushButton* btn_delete_;
 
     QVBoxLayout* lyt_main_;
     QGridLayout* lyt_grid_; // 创建网格布局

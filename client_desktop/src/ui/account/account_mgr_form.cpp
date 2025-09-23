@@ -48,9 +48,10 @@ void AccountMgrForm::setup_ui(){
     btn_data_owner_->setText("数据归属");
     btn_tool2_ = new QToolButton(this); // 工具占位按键
     btn_tool2_->setText("工具占位");
-    btn_read_passwd_ = new QPushButton("查看密码", this);  // 查看密码
-    btn_add_account_ = new QPushButton("新增", this);  // 新增
-    btn_detail_and_edit_ = new QPushButton("详情与编辑", this);  // 更新
+    btn_read_passwd_ = new QPushButton("查看密码", this);
+    btn_add_account_ = new QPushButton("新增", this);
+    btn_detail_and_edit_ = new QPushButton("详情与编辑", this);
+    btn_transfer_ = new QPushButton("转移", this);
     btn_delete_ = new QPushButton("删除", this);
 
     dlg_add_acc_ = new DialogAddAccount(this);
@@ -74,6 +75,7 @@ void AccountMgrForm::setup_ui(){
     lyt_bottom_btn_->addWidget(btn_read_passwd_);
     lyt_bottom_btn_->addWidget(btn_add_account_);
     lyt_bottom_btn_->addWidget(btn_detail_and_edit_);
+    lyt_bottom_btn_->addWidget(btn_transfer_);
     lyt_bottom_btn_->addWidget(btn_delete_);
     // lyt_bottom_btn_->addSpacing(30);
     lyt_bottom_btn_->addStretch();
@@ -102,6 +104,7 @@ void AccountMgrForm::setup_ui(){
     connect(btn_read_passwd_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_read_passwd_clicked);
     connect(btn_add_account_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_add_account_clicked);
     connect(btn_detail_and_edit_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_detail_and_edit_clicked);
+    connect(btn_transfer_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_transfer_clicked);
     connect(btn_delete_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_delete_clicked);
     connect(table_view_, &QTableView::clicked, this, &AccountMgrForm::on_table_view_item_clicked);
 }
@@ -239,6 +242,9 @@ void AccountMgrForm::on_btn_detail_and_edit_clicked() const {
     }
 }
 
+void AccountMgrForm::on_btn_transfer_clicked() {
+    QMessageBox::information(this, "提示", "功能暂未实现！");
+}
 void AccountMgrForm::on_btn_delete_clicked() {
     if(table_model_->rowCount() <= this->row_of_table_view_) {
         Toast::showToast((QWidget*)this, "表格中无数据！请先查询", 3000, QColor(200, 0, 200, 220), Qt::white);

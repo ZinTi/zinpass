@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
             delete main_workbench;
         }
     }
-    
+
     delete login_dlg;
     return 0;
 }

@@ -12,7 +12,7 @@
 DialogEditAccount::DialogEditAccount(const std::string& account_id, QWidget* parent) : QDialog(parent), account_id_(account_id) {
     // 创建主窗口的中心部件
     setup_ui();
-    initial_input_widgets(); // 初始化输入控件
+    if (!account_id.empty()) initial_input_widgets(); // 初始化输入控件
 }
 
 DialogEditAccount::~DialogEditAccount() {
@@ -241,6 +241,7 @@ QMap<QString, QVariant> DialogEditAccount::get_form_data() const{
 
 void DialogEditAccount::set_account_id(const std::string& account_id) {
     this->account_id_ = account_id;
+    initial_input_widgets();
 }
 
 void DialogEditAccount::on_btn_submit_clicked(){

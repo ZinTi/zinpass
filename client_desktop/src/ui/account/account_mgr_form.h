@@ -42,6 +42,7 @@ private:
     AccountFilterForm* filter_form_; // 筛选控件面板
     QStandardItemModel* table_model_;
     QTableView* table_view_;        // 表格
+
     DialogAddAccount* dlg_add_acc_; // 新增账号
     DialogEditAccount* dlg_edit_acc_; // 编辑账号
 

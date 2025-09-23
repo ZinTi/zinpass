@@ -6,6 +6,7 @@
 #include "rpc/phone_rpc.h"
 #include "rpc/telecom_rpc.h"
 #include "common/dlg_auth.h"
+#include "common/toast.h"
 #include "phone/deletion_guide_dlg.h"
 
 PhoneDetailFrame::PhoneDetailFrame(QFrame *parent) : QFrame(parent){
@@ -261,11 +262,8 @@ void PhoneDetailFrame::on_btn_delete_clicked(){
     if(ref_count == 0) { // 直接删除
         const auto[result1, msg1, ref_count1] =
             phone_rpc.delete_phone_by_id(session_id, dest_phone_id, 0, -1);
-        if (result1) {
-            QMessageBox::information(this, QString("完成"), QString::fromStdString(msg1));
-        } else {
-            QMessageBox::warning(this, QString("失败"), QString::fromStdString(msg1));
-        }
+        if(result1) emit sig_update_table(); // 通知父组件更新 table_view
+        Toast::showToast(this, QString::fromStdString(msg1), 3000, QColor(0, 0, 0, 255), Qt::green);
         return; // 不管是否成功，都不再弹出二次删除框
     }
 
@@ -278,32 +276,14 @@ void PhoneDetailFrame::on_btn_delete_clicked(){
     const int selected_option = deletion_guide_dlg->get_selected_option();
 
     // 4. 第二次删除
-    const auto[result, message, ref_count2] =
+    const auto[result2, msg2, ref_count2] =
     phone_rpc.delete_phone_by_id(session_id, dest_phone_id, selected_option, -1);
 
-    // 5. 更新UI：更新当前组件以及通知父组件更新 table_view
-    if(result){
-        QMessageBox::information(this, QString("完成"), QString("删除成功！%1").arg(message));
-    }else{
-        QMessageBox::warning(this, QString("失败"), QString("删除失败！%1").arg(message));
-    }
+    // 5. 更新 UI
+    if(result2) emit sig_update_table(); // 通知父组件更新 table_view
+    Toast::showToast(this, QString::fromStdString(msg2), 3000, QColor(0, 0, 0, 255), Qt::green);
 
     delete deletion_guide_dlg;
-    /*
-    const int rowCount = ui->tableWidget->rowCount(); // 获取表格行数
-    // 删除用户后在ui->tableWidget中也删除那一行（相当于刷新操作，无需再次从数据库中查询）
-    if(ui->tableWidget->item(row_tableW, 0)->text() == inId){ // 若还是这行（未因其他操作篡改）则直接删除
-        ui->tableWidget->removeRow(row_tableW);
-    }else{ // 否则找一下再删
-        // bool found = false;
-        for (int i = 0; i < rowCount; ++i) {
-            if (ui->tableWidget->item(i, 0)->text() == inId) {
-                ui->tableWidget->removeRow(i);
-                // found = true;
-                break;
-            }
-        }
-    }*/
 }
 
 

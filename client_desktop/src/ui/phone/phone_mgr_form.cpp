@@ -61,12 +61,8 @@ void PhoneMgrForm::setup_ui(){
         }
     );
 
-    QObject::connect(filter_form_, &PhoneFilterForm::form_submitted,
-        [&](){
-            list_phones();
-        }
-    );
-
+    connect(filter_form_, &PhoneFilterForm::sig_form_submitted, this, &PhoneMgrForm::list_phones);
+    connect(phone_detail_frame_, &PhoneDetailFrame::sig_update_table, this, &PhoneMgrForm::list_phones);
     connect(btn_add_, &QPushButton::clicked, this, &PhoneMgrForm::on_btn_add_clicked);
     connect(btn_clear_, &QPushButton::clicked, this, &PhoneMgrForm::on_btn_clear_clicked);
     connect(table_view_, &QTableView::clicked, this, &PhoneMgrForm::on_table_view_item_clicked); // 用户点击表格项，获取行列坐标保存到私有属性中，并显示Id列信息

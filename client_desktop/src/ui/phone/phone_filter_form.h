@@ -23,7 +23,7 @@ public:
     QMap<QString, QVariant> get_form_data() const;
 
 signals:
-    void form_submitted();
+    void sig_form_submitted();
 
 private slots:
     void on_btn_refresh_clicked() const;          // 处理刷新按键点击事件

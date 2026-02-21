@@ -1,0 +1,23 @@
+# service_config.yml - 服务端的配置文件（新版服务端配置文件-暂不可用）
+
+# 监听客户端
+client:
+  - address: "0.0.0.0"
+  - port: 50051
+  - session_timeout: 3600
+
+# 监听命令行工具
+cli:
+  - address: "127.0.0.1"
+  - port: 50052
+
+# 数据库配置
+database:
+  - path: "../data/zinpass.db"
+  - backup: "../data/zinpass.db.bak"
+
+# 日志配置
+log:
+  - path: "../data/service.log"
+  - cleanup_interval: 86400
+  - max_size: 104857600

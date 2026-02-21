@@ -1,5 +1,13 @@
 # ZinPass 密码管理器
 
+> 本项目的客户端基于 Qt6 Widget 开发，由于以下原因：
+> 1. Qt Widget 太过简陋陈旧，界面设计和用户体验都非常糟糕，功能有限；
+> 2. Linux 平台和 Windows + MSVC 组合在 CI/CD 自动化上始终存在困难；
+> 
+> 所以目前计划使用 Qt Quick(QML) 重写客户端。
+> 
+> 当前 Qt Widget 的客户端不再维护和更新，直到后续 Qt Quick 版本的客户端的功能达到 Qt Widget 版本可用的状态，再合并进 main 分支。
+
 <div style="text-align: center;">
     <img src="./docs/images/social_preview.png" alt="logo && slogan" height="200" />
     <p style="font-style: italic; font-size: smaller;">ZinPass is a lightweight password manager built with C++ and Qt6 Widgets, designed to securely store and manage your passwords with a clean and intuitive interface.</p>

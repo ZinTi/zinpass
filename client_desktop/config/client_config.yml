@@ -1,0 +1,13 @@
+# client_config.yml - 客户端的配置文件
+
+# 服务器地址和端口
+server:
+  - protocol: "http"
+  - address: "127.0.0.1"
+  - port: 50051
+
+# 本地客户端配置
+client:
+  theme: system             # 主题：dark/light/system
+  locale: zh_CN             # 地区与语言
+  log_path: "data/app.log"  # 本地日志

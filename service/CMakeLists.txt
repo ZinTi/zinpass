@@ -7,8 +7,7 @@ endif()
 project(zinpass_service VERSION ${ZINPASS_VERSION} LANGUAGES CXX)
 
 # 设置输出目录
-set(COMPONENT_NAME "server")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROGRAM_NAME}-${COMPONENT_NAME}-v${ZINPASS_VERSION}-${OS_NAME}-${ARCH_NAME}-${TOOLCHAIN_NAME}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY server/bin)
 
 # 设置平台相关变量
 if(WIN32)
@@ -21,25 +20,34 @@ endif()
 
 # 设置依赖库搜索路径（完整路径、环境变量或缓存变量）
 list(APPEND CMAKE_PREFIX_PATH
-        "A:/applib/grpc-1.71.0-amd64-win-mingw64"    # gRPC-1.71.0
-        "A:/applib/openssl-win64-mingw"              # OpenSSL-3.5.0 (若 gRPC 库中内置的 OpenSSL冲突了，则注释掉此行)
-        "A:/applib/boost-msys2-mingw64"              # Boost-1.88
-        "A:/applib/sqlite-v3.50.0-windows-amd64"     # SQLite-3.50.0 (libsqlite3.a)
+        "${PROJECT_ROOT}/third_party/grpc"
+        "${PROJECT_ROOT}/third_party/openssl"   # 若 gRPC 库中内置的 OpenSSL冲突了，则注释掉此行
+        "${PROJECT_ROOT}/third_party/boost"
+        "${PROJECT_ROOT}/third_party/sqlite"
 )
 
+# 在 find_package 前强制设置静态库查找顺序
+if(MINGW)
+    # MinGW 下，设置 .a 优先于 .dll.a
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .a .dll.a .so .lib .dylib)
+elseif(WIN32 AND MSVC)
+    # MSVC 下，.lib 优先于 .dll.lib
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .dll.lib .a .so .dylib)
+else()
+    # Linux/Unix 下，.a 优先于 .so/.dylib
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .a .so .dylib .lib)
+endif()
+
 # 查找依赖包
-find_package(OpenSSL 3.5.0 REQUIRED)
+find_package(OpenSSL REQUIRED)
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
-find_package(Boost 1.88 REQUIRED)
+find_package(Boost REQUIRED)
 find_package(SQLite3 REQUIRED)
 
 # 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# 指定Boost头文件库路径
-set(BOOST_HEADER_ONLY_DIR "A:/applib/boost-msys2-mingw64/include/boost-1_88")
 
 # 设置变量，包含项目文件
 set(PROJECT_SOURCES
@@ -120,24 +128,59 @@ set(PROJECT_SOURCES
 )
 
 # 添加可执行文件
-add_executable(zinpass_service
+add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCES}
 )
 
-# 设置输出文件名
-set_target_properties(zinpass_service PROPERTIES
-        OUTPUT_NAME "${EXECUTABLE_NAME}"
-        LINK_FLAGS "-static -Wl,-s"
+# 设置基本目标属性
+set_target_properties(${PROJECT_NAME} PROPERTIES
+        OUTPUT_NAME "${EXECUTABLE_NAME}"    # 输出文件名
 )
 
+# 根据编译器设置链接选项
+if(MSVC)
+    # MSVC: 使用/MT静态链接运行时库，/SUBSYSTEM:WINDOWS
+    target_link_options(${PROJECT_NAME} PRIVATE
+            $<$<CONFIG:Release>:/MT /SUBSYSTEM:WINDOWS /DEBUG:NONE /OPT:REF>
+            $<$<CONFIG:Debug>:/MTd /SUBSYSTEM:WINDOWS>
+    )
+
+elseif(MINGW OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    # MinGW/GCC: 使用-static -s
+    target_link_options(${PROJECT_NAME} PRIVATE
+            -static
+            -s
+            -Wl,--gc-sections
+    )
+
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # Clang: 使用相应的小体积选项
+    target_link_options(${PROJECT_NAME} PRIVATE
+            -Wl,--gc-sections
+            $<$<NOT:APPLE>:-s>
+            $<$<APPLE>:-Wl,-dead_strip>
+    )
+endif()
+
+# Release模式下的额外优化
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(${PROJECT_NAME} PRIVATE
+            $<$<CXX_COMPILER_ID:MSVC>:/O2>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-O2>
+    )
+endif()
+
 # 包含头文件目录（在add_executable、add_library之后）
-target_include_directories(zinpass_service
+target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/inc/
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/
 
         ${OPENSSL_INCLUDE_DIR} # OpenSSL 头文件
-        ${BOOST_HEADER_ONLY_DIR}  # Boost 头文件
+
+        # Windows 和 Linux 下 Boost 头文件路径可能不同，都添加到搜索路径中
+        "${PROJECT_ROOT}/third_party/boost/include/boost-1_89"
+        "${PROJECT_ROOT}/third_party/boost/include"
 )
 
 # 仅Windows平台设置无控制台
@@ -151,7 +194,7 @@ if(WIN32)
 endif()
 
 # 链接库
-target_link_libraries(zinpass_service
+target_link_libraries(${PROJECT_NAME}
     PRIVATE
         SQLite::SQLite3
 
@@ -160,3 +203,21 @@ target_link_libraries(zinpass_service
         gRPC::gpr
         protobuf::libprotobuf
 )
+
+# 安装服务端到 <prefix>/${SERVER_INSTALL_DIR}/ 目录下
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION "${SERVER_INSTALL_DIR}/bin"                # 可执行文件 -> <prefix>/${SERVER_INSTALL_DIR}/bin/
+        BUNDLE DESTINATION "${SERVER_INSTALL_DIR}"                     # macOS Bundle (若需要)
+        LIBRARY DESTINATION "${SERVER_INSTALL_DIR}/lib"                # 共享库
+        ARCHIVE DESTINATION "${SERVER_INSTALL_DIR}/lib"                # 静态库
+        RESOURCE DESTINATION "${SERVER_INSTALL_DIR}/resources"         # 资源文件
+)
+
+# 安装服务端配置文件
+install(FILES "config/service_config.yml" "config/service.config" DESTINATION "${SERVER_INSTALL_DIR}/bin")
+
+# 安装服务端脚本
+install(PROGRAMS "start_zinpass_svc.sh" "stop_zinpass_svc.sh" DESTINATION "${SERVER_INSTALL_DIR}/bin")
+
+# 安装服务端的数据文件
+install(DIRECTORY "data/" DESTINATION "${SERVER_INSTALL_DIR}/data")

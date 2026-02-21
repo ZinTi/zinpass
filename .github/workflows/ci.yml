@@ -1,0 +1,185 @@
+# .github/workflows/ci.yml
+
+# 参考 https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
+
+# Release Package Naming Format：
+#     <name>-<component>-v<semantic version>-<date build number>.<daily iteration number>-<platform>-<architecture>-<toolchain>.<extension>
+#  
+# Examples:
+#     hello-server-v1.0.0-20250924.1-linux-x86_x64-gcc.tar.xz
+#     hello-client-v1.0.0-20250924.2-windows-x86_x64-mingw.7z
+# 
+
+name: Build ZinPass CI
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  build-and-package:
+    runs-on: ${{ matrix.os }} # 指定运行环境，使用矩阵变量os
+    permissions:
+      contents: write # 允许创建和修改 releases
+    strategy: # 定义构建策略
+      fail-fast: false # false: 矩阵中某一任务失败，其他任务继续执行, true: 矩阵中某一任务失败，全部停止执行
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Release]
+        c_compiler: [gcc, clang, cl]
+        include:
+          - {os: windows-latest, c_compiler: cl,    cpp_compiler: cl}       # 1/4 Windows + MSVC
+          - {os: windows-latest, c_compiler: gcc,   cpp_compiler: g++}      # 2/4 Windows + GCC(MinGW-w64)
+          - {os: ubuntu-latest,  c_compiler: gcc,   cpp_compiler: g++}      # 3/4 Linux + GCC
+          - {os: ubuntu-latest,  c_compiler: clang, cpp_compiler: clang++}  # 4/4 Linux + Clang
+        exclude: [
+          {os: windows-latest, c_compiler: clang},
+          {os: ubuntu-latest,  c_compiler: cl},
+        ]
+
+    # timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4 # 使用actions/checkout动作检出代码库
+
+      # 设置可重用的字符串（如统一的以 / 为目录分隔符的工作目录、构建输出目录、Release 目录）
+      - name: 1. Set reusable strings
+        # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+        id: my_strs
+        shell: bash
+        run: |
+            workspace_dir="${{ github.workspace }}"       # 从GitHub上下文获取路径并标准化
+            workspace_dir="${workspace_dir//\\//}"        # 替换所有反斜杠为正斜杠
+            workspace_dir="${workspace_dir%/}"            # 移除路径末尾的斜杠（若有）
+
+            # release output path
+            version=$(grep -m1 'project(.* VERSION' $workspace_dir/CMakeLists.txt | grep -oE '[0-9]+\.[0-9]+\.[0-9]+') # 从项目根目录的 CMakeLists.txt 获取版本号
+            full_version="v${version:-0.0.0}-$(date +'%Y%m%d')" # 使用语义化版本+日期
+            platform=$(echo $RUNNER_OS | tr '[:upper:]' '[:lower:]')-$(uname -m) # short_os-arch
+            if [ "$RUNNER_OS" == "Linux" ]; then
+              toolchain="${{ matrix.c_compiler }}"
+            elif [ "$RUNNER_OS" == "Windows" ]; then
+              if [ "${{ matrix.c_compiler }}" == "cl" ]; then
+                toolchain="msvc"
+              else
+                toolchain="mingw"
+              fi
+            fi
+            release_dir_name="zinpass-${full_version}-${platform}-${toolchain}"
+
+            # github actions env
+            echo "WORKSPACE_DIR=$workspace_dir" >> "$GITHUB_OUTPUT"
+            echo "RELEASE_DIR_NAME=$release_dir_name" >> "$GITHUB_OUTPUT"
+
+            # debug output
+            echo "=== GITHUB_OUTPUT ==="
+            cat "$GITHUB_OUTPUT"
+
+      # SQLite, OpenSSL, gRPC, Protobuf, yaml-cpp, Qt, Boost, ...
+      - name: 2. Download and Install Dependencies
+        shell: bash
+        run: |
+          cd ${{ steps.my_strs.outputs.WORKSPACE_DIR }}
+          chmod +x install_deps.sh
+          # ./install_deps.sh <os_name> <c_compiler> <workspace_dir>
+          ./install_deps.sh ${{ matrix.os }} ${{ matrix.c_compiler }} ${{ steps.my_strs.outputs.WORKSPACE_DIR }}
+
+      - name: 3. Build (linux)
+        shell: bash
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd ${{ steps.my_strs.outputs.WORKSPACE_DIR }}
+          chmod +x build_linux_${{ matrix.c_compiler }}.sh
+          ./build_linux_${{ matrix.c_compiler }}.sh
+
+      - name: 3. Build (windows)
+        shell: pwsh
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd ${{ steps.my_strs.outputs.WORKSPACE_DIR }}
+          if ("${{ matrix.c_compiler }}" -eq "cl") {
+            .\build_windows_msvc.ps1
+          } else {
+            .\build_windows_mingw.ps1
+          }
+
+      # - name: 4. Prepare release files
+      #   shell: bash
+      #   run: |
+
+      #     # 创建组件目录
+      #     mkdir -p ${{ steps.my_strs.outputs.release-dir }}/client/bin
+      #     mkdir -p ${{ steps.my_strs.outputs.release-dir }}/server/{bin,data}
+
+      #     # 复制可执行文件到对应组件
+      #     if [ "${{ matrix.c_compiler }}" == "cl" ]; then
+      #       cp ${{ steps.my_strs.outputs.build-output-dir }}/client_desktop/Release/hello.exe ${{ steps.my_strs.outputs.release-dir }}/client/bin/
+      #       cp ${{ steps.my_strs.outputs.build-output-dir }}/service/Release/hellod.exe ${{ steps.my_strs.outputs.release-dir }}/server/bin/
+      #       cp ${{ steps.my_strs.outputs.build-output-dir }}/control/Release/helloctl.exe ${{ steps.my_strs.outputs.release-dir }}/server/bin/
+      #     else
+      #       cp ${{ steps.my_strs.outputs.build-output-dir }}/client_desktop/hello ${{ steps.my_strs.outputs.release-dir }}/client/bin/
+      #       cp ${{ steps.my_strs.outputs.build-output-dir }}/service/hellod ${{ steps.my_strs.outputs.release-dir }}/server/bin/
+      #       cp ${{ steps.my_strs.outputs.build-output-dir }}/control/helloctl ${{ steps.my_strs.outputs.release-dir }}/server/bin/
+      #     fi
+
+      #     # 复制资源文件
+      #     # cp -r assets ${{ steps.my_strs.outputs.release-dir }}/client/
+      #     # cp -r assets ${{ steps.my_strs.outputs.release-dir }}/server/
+
+      - name: 4. Package
+        shell: bash
+        run: |
+          cd ${{ steps.my_strs.outputs.WORKSPACE_DIR }}
+          chmod +x package_dirs.sh
+          ./package_dirs.sh
+
+      - name: 5. Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: zinpass-${{ matrix.os }}-${{ matrix.c_compiler }}
+          path: |
+            ${{ steps.my_strs.outputs.WORKSPACE_DIR }}/*.tar.xz
+            ${{ steps.my_strs.outputs.WORKSPACE_DIR }}/*.7z
+
+      - name: 6. Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.0.1
+          target_commitish: main
+          body: |
+            ###  🏷️ v0.0.1 (pre-release)🧪
+            ⚠️ **注意：这是初始开发版本❗**
+            - 仅用于功能验证和早期测试
+            - API 和功能可能随时变更
+            - **下方的预构建二进制安装包都是基于最新开发分支，不是基于main分支，请勿用于生产环境**
+            - 当前为 pre-release 版本，尚未达到生产可用状态，不保证数据安全。
+
+            ##### ✨ 新功能 ⚡
+            NULL
+
+            #####  🐛 BUG 修复🔧
+            2025年09月23日：客户端bug，重新登录未清除上一次登录的数据；查询账号详细信息手动点击刷新。
+            2025年09月22日： 客户端bug，此前删除账号密码时会删除失败，但显示删除成功。
+
+            ##### ⚠️ 已知问题 
+            客户端输入数据合法性校验不完善；删除 phone 记录，用户选择级联删除策略时存在错误；已知问题将在后续版本中修复。
+
+            ##### 📖 使用说明与文档更新📚
+            使用前先启动文件名为 zinpasssvc.exe 的服务器，然后启动文件名为 zinpass.exe 的桌面客户端；若要停止服务，请使用文件名为 zinpassctl.exe 的命令行工具，输入 stop 命令关闭 zinpasssvc 服务；
+
+            ##### 🔒 安全修复与数据迁移🐦‍🔥
+            NULL
+
+            ##### ⬆️ 依赖更新与界面优化 🎨
+            NULL
+
+            ##### 🗺️  未来计划与功能预告 🔮
+            后续版本可能使用动态链接 Qt 库；计划添加人脸识别功能；
+          files: |
+            ${{ steps.my_strs.outputs.WORKSPACE_DIR }}/*.tar.xz
+            ${{ steps.my_strs.outputs.WORKSPACE_DIR }}/*.7z
+          overwrite_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

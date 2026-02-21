@@ -6,8 +6,7 @@ if(NOT DEFINED ZINPASS_VERSION)
 endif()
 project(client_desktop VERSION ${ZINPASS_VERSION} LANGUAGES CXX)
 
-set(COMPONENT_NAME "client")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROGRAM_NAME}-${COMPONENT_NAME}-v${ZINPASS_VERSION}-${OS_NAME}-${ARCH_NAME}-${TOOLCHAIN_NAME}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY client/bin)
 
 # 设置平台相关变量
 if(WIN32)
@@ -18,14 +17,15 @@ else()
     set(EXECUTABLE_NAME "zinpass")
 endif()
 
-# 设置库路径（mingw64静态库）
-set(CMAKE_PREFIX_PATH
-        "A:/applib/qt-6.9.0-win64-mingw64-static"    # Qt 6.9.0 mingw64 static (for release)
-        "A:/applib/grpc-1.71.0-amd64-win-mingw64"
+# 设置依赖库搜索路径（完整路径、环境变量或缓存变量）
+list(APPEND CMAKE_PREFIX_PATH
+        "${PROJECT_ROOT}/third_party/qt"
+        "${PROJECT_ROOT}/third_party/qt/lib/cmake/Qt6"
+        "${PROJECT_ROOT}/third_party/grpc"
 )
 
 # 设置 gRPC 和 Protobuf 的根目录
-set(GRPC_INSTALL_DIR "A:/applib/grpc-1.71.0-amd64-win-mingw64")
+set(GRPC_INSTALL_DIR "${PROJECT_ROOT}/third_party/grpc")
 set(Protobuf_ROOT ${GRPC_INSTALL_DIR})
 set(gRPC_ROOT ${GRPC_INSTALL_DIR})
 
@@ -48,6 +48,18 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# 在 find_package 前强制设置静态库查找顺序
+if(MINGW)
+    # MinGW 下，设置 .a 优先于 .dll.a
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .a .dll.a .so .lib .dylib)
+elseif(WIN32 AND MSVC)
+    # MSVC 下，.lib 优先于 .dll.lib
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .dll.lib .a .so .dylib)
+else()
+    # Linux/Unix 下，.a 优先于 .so/.dylib
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .a .so .dylib .lib)
+endif()
+
 # 查找 Qt、Protobuf、 gRPC
 set(QT_NO_PRIVATE_MODULE_WARNING ON)  # 抑制私有模块警告
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
@@ -55,6 +67,50 @@ find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
+
+# 添加对OpenGL和X11的查找（Linux平台）
+if(UNIX AND NOT APPLE)  # Linux平台
+    # 尝试查找静态OpenGL库
+    find_library(GL_STATIC_LIB NAMES libGL.a GL PATHS
+        /usr/lib/x86_64-linux-gnu
+        /usr/lib
+        /usr/local/lib
+        NO_DEFAULT_PATH
+    )
+    
+    # 尝试查找静态X11库
+    find_library(X11_STATIC_LIB NAMES libX11.a X11 PATHS
+        /usr/lib/x86_64-linux-gnu
+        /usr/lib
+        /usr/local/lib
+        NO_DEFAULT_PATH
+    )
+    
+    # 如果找不到静态库，查找动态库
+    if(NOT GL_STATIC_LIB)
+        find_package(OpenGL QUIET)
+        if(OpenGL_FOUND)
+            set(GL_LIBRARIES ${OPENGL_LIBRARIES})
+        else()
+            find_library(GL_DYNAMIC_LIB NAMES GL)
+            set(GL_LIBRARIES ${GL_DYNAMIC_LIB})
+        endif()
+    else()
+        set(GL_LIBRARIES ${GL_STATIC_LIB})
+    endif()
+    
+    if(NOT X11_STATIC_LIB)
+        find_package(X11 QUIET)
+        if(X11_FOUND)
+            set(X11_LIBRARIES ${X11_LIBRARIES})
+        else()
+            find_library(X11_DYNAMIC_LIB NAMES X11)
+            set(X11_LIBRARIES ${X11_DYNAMIC_LIB})
+        endif()
+    else()
+        set(X11_LIBRARIES ${X11_STATIC_LIB})
+    endif()
+endif()
 
 # 包含头文件目录
 include_directories(
@@ -169,12 +225,12 @@ set(PROJECT_SOURCES
         auto_generated/grpc/account/v1/category.grpc.pb.cc
 )
 
-add_executable(client_desktop
+add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCES}
 )
 
 # 链接 Qt6 和 OpenSSL、Windows 系统库
-target_link_libraries(client_desktop PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
         Qt6::Core
         Qt6::Gui
         Qt6::Widgets
@@ -186,33 +242,97 @@ target_link_libraries(client_desktop PRIVATE
         gRPC::gpr
         protobuf::libprotobuf
 
-        ws2_32
-        user32
-        advapi32
-        crypt32
+        # Windows专用库（仅Windows平台链接）
+        $<$<PLATFORM_ID:Windows>:ws2_32>
+        $<$<PLATFORM_ID:Windows>:user32>
+        $<$<PLATFORM_ID:Windows>:advapi32>
+        $<$<PLATFORM_ID:Windows>:crypt32>
 )
 
-# 设置Win32应用、优化二进制体积、静态编译c++运行时库、线程库
-set_target_properties(client_desktop PROPERTIES
-        WIN32_EXECUTABLE TRUE                               # Win32 应用
-        OUTPUT_NAME "${EXECUTABLE_NAME}"                    # 设置输出文件名
-        LINK_FLAGS "-static -Wl,-s"
+# Linux专用库（放在单独的target_link_libraries调用中）
+if(UNIX AND NOT APPLE AND GL_LIBRARIES AND X11_LIBRARIES)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        ${GL_LIBRARIES}
+        ${X11_LIBRARIES}
+    )
+endif()
+
+# 设置基本目标属性
+set_target_properties(${PROJECT_NAME} PROPERTIES
+        WIN32_EXECUTABLE TRUE                           # Win32 应用
+        OUTPUT_NAME "${EXECUTABLE_NAME}"                # 设置输出文件名
 )
+
+# 根据编译器设置链接选项
+if(MSVC)
+    # MSVC: 使用/MT静态链接运行时库，/SUBSYSTEM:WINDOWS
+    target_link_options(${PROJECT_NAME} PRIVATE
+            $<$<CONFIG:Release>:/MT /SUBSYSTEM:WINDOWS /DEBUG:NONE /OPT:REF>
+            $<$<CONFIG:Debug>:/MTd /SUBSYSTEM:WINDOWS>
+    )
+
+elseif(MINGW)
+    # MinGW: 使用-static -s
+    target_link_options(${PROJECT_NAME} PRIVATE
+            -static
+            -s
+            -Wl,--gc-sections
+    )
+
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    # Linux下：不要使用-static，避免静态链接动态库
+    # 但可以尝试使用-Wl,-Bstatic和-Wl,-Bdynamic来控制链接方式
+    target_link_options(${PROJECT_NAME} PRIVATE
+            -s
+            -Wl,--gc-sections
+            # 使用链接器选项移除对不需要库的引用
+            -Wl,--as-needed
+            # 排除 QtPdf 静态库，避免其附带的.rsp文件被引用
+            -Wl,--exclude-libs,libQt6Pdf.a
+            # 尝试先静态链接，如果失败则动态链接
+            -Wl,-Bstatic -lGL -Wl,-Bdynamic
+    )
+
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # Linux下：不要使用-static，避免静态链接动态库
+    # 但可以尝试使用-Wl,-Bstatic和-Wl,-Bdynamic来控制链接方式
+    # Clang: 使用相应的小体积选项
+    target_link_options(${PROJECT_NAME} PRIVATE
+            -s
+            -Wl,--gc-sections
+            # 使用链接器选项移除对不需要库的引用
+            -Wl,--as-needed
+            # 排除 QtPdf 静态库，避免其附带的.rsp文件被引用
+            -Wl,--exclude-libs,libQt6Pdf.a
+            # 尝试先静态链接，如果失败则动态链接
+            -Wl,-Bstatic -lGL -Wl,-Bdynamic
+            $<$<NOT:APPLE>:-s>
+            $<$<APPLE>:-Wl,-dead_strip>
+    )
+endif()
+
+# Release模式下的额外优化
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(${PROJECT_NAME} PRIVATE
+            $<$<CXX_COMPILER_ID:MSVC>:/O2>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-O2>
+    )
+endif()
 
 # 静态编译专用配置
-target_compile_definitions(client_desktop PRIVATE
+target_compile_definitions(${PROJECT_NAME} PRIVATE
         QT_STATICPLUGIN  # 启用静态插件支持
 )
 
-# 安装配置
-include(GNUInstallDirs)
-install(TARGETS client_desktop
-        BUNDLE DESTINATION .
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+# 配置安装规则（安装客户端到 <prefix>/${CLIENT_INSTALL_DIR}/ 目录下）
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION "${CLIENT_INSTALL_DIR}/bin"                # 可执行文件
+        BUNDLE DESTINATION "${CLIENT_INSTALL_DIR}"                     # macOS Bundle (若需要)
+        LIBRARY DESTINATION "${CLIENT_INSTALL_DIR}/lib"                # 共享库
+        ARCHIVE DESTINATION "${CLIENT_INSTALL_DIR}/lib"                # 静态库
+        RESOURCE DESTINATION "${CLIENT_INSTALL_DIR}/resources"         # 资源文件
 )
 
-# 构建命令示例
-# mkdir build && cd build
-# cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++ -DCMAKE_MAKE_PROGRAM=mingw32-make ..
-# mingw32-make -j16
+# 安装客户端的配置文件
+install(FILES "config/client_config.yml" DESTINATION "${CLIENT_INSTALL_DIR}/bin")
+

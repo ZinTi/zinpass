@@ -1,16 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-编译 .proto 文件生成 gRPC 桩代码的脚本
+Script for compiling .proto files to generate gRPC stub code
 
-命令行参数：
+Command line arguments:
 protoc.py <grpc_home_path> [-c COMPONENTS]
 python protoc.py <grpc_home_path> [-c COMPONENTS]
 
-参数说明：
-grpc_home_path: GRPC安装目录路径
--c/--components: 三位二进制字符串，控制要编译的组件（service/control/client），默认111（全部编译）
+Parameter description:
+grpc_home_path: GRPC installation directory path
+-c/--components: 3-digit binary string to control which components to compile (service/control/client), default 111 (compile all)
 
-例如：
-python protoc.py "D:\applib\grpc-1.71.0-amd64-win-mingw64" -c 111
+Example:
+python protoc.py "third_party/grpc-1.71.0-amd64-win-mingw64" -c 111
 """
 
 import os
@@ -19,7 +21,7 @@ import argparse
 import sys
 
 def validate_components(components):
-    """验证components参数是否合法"""
+    """Validate if components parameter is valid"""
     if len(components) != 3:
         raise argparse.ArgumentTypeError("Components must be a 3-digit binary string")
     if any(char not in '01' for char in components):
@@ -27,16 +29,16 @@ def validate_components(components):
     return components
 
 def create_directory(path):
-    """创建目录并处理异常"""
+    """Create directory and handle exceptions"""
     try:
         os.makedirs(path, exist_ok=True)
-        print(f"成功创建目录: {path}")
+        print(f"Successfully created directory: {path}")
     except OSError as e:
-        print(f"创建目录失败 [{path}]: {e}")
+        print(f"Failed to create directory [{path}]: {e}")
         sys.exit(1)
 
 def run_protoc(protoc_path, arguments, component_name):
-    """执行protoc命令并处理结果"""
+    """Execute protoc command and handle results"""
     try:
         result = subprocess.run(
             [protoc_path] + arguments,
@@ -44,55 +46,59 @@ def run_protoc(protoc_path, arguments, component_name):
             text=True,
             check=True
         )
-        print(f"=== {component_name} 编译成功 ===")
-        print(f"输出目录: {arguments[0].split('=')[1]}")
+        print(f"=== {component_name} compilation successful ===")
+        print(f"Output directory: {arguments[0].split('=')[1]}")
         if result.stdout:
-            print("标准输出:", result.stdout)
+            print("Standard output:", result.stdout)
         if result.stderr:
-            print("警告信息:", result.stderr)
+            print("Warning messages:", result.stderr)
         return True
     except subprocess.CalledProcessError as e:
-        print(f"=== {component_name} 编译失败 ===")
-        print("返回码:", e.returncode)
-        print("错误信息:", e.stderr)
+        print(f"=== {component_name} compilation failed ===")
+        print("Return code:", e.returncode)
+        print("Error message:", e.stderr)
         return False
 
 def main():
-    # 解析参数
-    parser = argparse.ArgumentParser(description='编译.proto文件生成gRPC桩代码')
-    parser.add_argument('grpc_home_path', help='GRPC安装目录路径')
+    # Parse arguments
+    parser = argparse.ArgumentParser(description='Compile .proto files to generate gRPC stub code')
+    parser.add_argument('grpc_home_path', help='GRPC installation directory path')
     parser.add_argument('-c', '--components',
                         type=validate_components,
                         default='111',
-                        help='三位二进制控制要编译的组件（service/control/client），例如101表示编译service和client')
+                        help='3-digit binary string to control which components to compile (service/control/client), e.g., 101 means compile service and client')
     args = parser.parse_args()
 
-    # 使用参数
-    print(f"gRPC安装目录: {args.grpc_home_path}")
-    print(f"编译组件设置: {args.components} (service:{args.components[0]}, control:{args.components[1]}, client:{args.components[2]})")
+    # Use parameters
+    print(f"gRPC installation directory: {args.grpc_home_path}")
+    print(f"Compilation components setting: {args.components} (service:{args.components[0]}, control:{args.components[1]}, client:{args.components[2]})")
 
-    # 获取项目根目录
+    # Get project root directory
     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
     PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
-    print(f"项目根目录: {PROJECT_ROOT}")
+    print(f"Project root directory: {PROJECT_ROOT}")
 
-    # 设置gRPC路径
+    # Set gRPC paths
     GRPC_INSTALL_DIR = args.grpc_home_path
-    protoc_path = os.path.join(GRPC_INSTALL_DIR, "bin", "protoc.exe")
-    grpc_cpp_plugin_path = os.path.join(GRPC_INSTALL_DIR, "bin", "grpc_cpp_plugin.exe")
 
-    # 验证protoc是否存在
+    # Determine executable suffix based on OS
+    exe_suffix = ".exe" if os.name == "nt" else ""
+
+    protoc_path = os.path.join(GRPC_INSTALL_DIR, "bin", f"protoc{exe_suffix}")
+    grpc_cpp_plugin_path = os.path.join(GRPC_INSTALL_DIR, "bin", f"grpc_cpp_plugin{exe_suffix}")
+
+    # Verify protoc exists
     if not os.path.exists(protoc_path):
-        print(f"错误: 未找到protoc可执行文件: {protoc_path}")
+        print(f"Error: protoc executable not found: {protoc_path}")
         sys.exit(1)
 
-    # 准备目录路径
+    # Prepare directory paths
     protos_src_base_dir = os.path.join(PROJECT_ROOT, "protos")
     target_dir_service = os.path.join(PROJECT_ROOT, "service", "auto_generated")
     target_dir_control = os.path.join(PROJECT_ROOT, "control", "auto_generated")
     target_dir_client = os.path.join(PROJECT_ROOT, "client_desktop", "auto_generated", "grpc")
 
-    # 根据组件设置创建目录
+    # Create directories based on component settings
     if args.components[0] == '1':
         create_directory(target_dir_service)
     if args.components[1] == '1':
@@ -100,14 +106,14 @@ def main():
     if args.components[2] == '1':
         create_directory(target_dir_client)
 
-    # 公共参数
+    # Common arguments
     common_args = [
         "-I=" + protos_src_base_dir,
         "-I=" + os.path.join(GRPC_INSTALL_DIR, "include", "google", "protobuf"),
         "--plugin=protoc-gen-grpc=" + grpc_cpp_plugin_path
     ]
 
-    # 定义各组件参数
+    # Define component-specific proto files
     service_protos = [
         os.path.join(protos_src_base_dir, "common/v1/common.proto"),
         os.path.join(protos_src_base_dir, "hello/hello.proto"),
@@ -136,45 +142,45 @@ def main():
         os.path.join(protos_src_base_dir, "account/v1/telecom.proto")
     ]
 
-    # 根据组件设置执行编译
+    # Execute compilation based on component settings
     success = True
 
-    # 1. 编译Service组件
+    # 1. Compile Service component
     if args.components[0] == '1':
         service_args = [
                            "--grpc_out=" + target_dir_service,
                            "--cpp_out=" + target_dir_service
                        ] + common_args + service_protos
 
-        if not run_protoc(protoc_path, service_args, "1. Service组件"):
+        if not run_protoc(protoc_path, service_args, "1. Service component"):
             success = False
 
-    # 2. 编译Control组件
+    # 2. Compile Control component
     if args.components[1] == '1':
         control_args = [
                            "--grpc_out=" + target_dir_control,
                            "--cpp_out=" + target_dir_control
                        ] + common_args + control_protos
 
-        if not run_protoc(protoc_path, control_args, "2. Control组件"):
+        if not run_protoc(protoc_path, control_args, "2. Control component"):
             success = False
 
-    # 3. 编译Client组件
+    # 3. Compile Client component
     if args.components[2] == '1':
         client_args = [
                           "--grpc_out=" + target_dir_client,
                           "--cpp_out=" + target_dir_client
                       ] + common_args + client_protos
 
-        if not run_protoc(protoc_path, client_args, "3. Client组件"):
+        if not run_protoc(protoc_path, client_args, "3. Client component"):
             success = False
 
-    # 汇总结果
+    # Summary results
     if success:
-        print("\n所有指定组件编译成功！")
+        print("\nAll specified components compiled successfully!")
         sys.exit(0)
     else:
-        print("\n部分组件编译失败，请检查错误信息！")
+        print("\nSome components failed to compile, please check error messages!")
         sys.exit(1)
 
 if __name__ == "__main__":

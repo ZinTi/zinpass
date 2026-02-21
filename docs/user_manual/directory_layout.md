@@ -8,9 +8,9 @@
 ## 一、Release Package Naming Format - 发版包命名格式说明  
 
 - **Format:** 
-- <Name>-<Component>-<Version>-<Platform>-<Architecture>-<Toolchain>.<Extension>
+- <name>-<component>-v<semantic version>-<date build number>.<daily iteration number>-<platform>-<architecture>-<toolchain>.<extension>
 - 
-- **格式：** <名称>-<组件>-<版本>-<平台>-<架构>-<编译器>.<扩展名>  
+- **格式：** <名称>-<组件>-v<语义化版本>-<YYYYMMDD>.<日迭代版本>-<平台>-<架构>-<编译器>.<扩展名>  
     - 名称：zinpass
     - 组件：server（服务端）或 client（桌面客户端）
     - 版本：如 v1.0.0
@@ -22,22 +22,22 @@
 # 例如
 
 1. 服务端
-zinpass-server-v1.0.0-linux-x86_64-gcc.tar.xz           √
-zinpass-server-v1.0.0-linux-x86_64-clang.tar.xz         -
-zinpass-server-v1.0.0-linux-aarch64-gcc.tar.xz          ×
-zinpass-server-v1.0.0-linux-aarch64-clang.tar.xz        ×
+zinpass-server-v1.0.0-20250924.1-linux-x86_64-gcc.tar.xz           √
+zinpass-server-v1.0.0-20250924.1-linux-x86_64-clang.tar.xz         -
+zinpass-server-v1.0.0-20250924.1-linux-aarch64-gcc.tar.xz          ×
+zinpass-server-v1.0.0-20250924.1-linux-aarch64-clang.tar.xz        ×
 
-zinpass-server-v1.0.0-windows-x86_64-mingw64.7z         √
-zinpass-server-v1.0.0-windows-x86_64-msvc.7z            -
-zinpass-server-v1.0.0-windows-aarch64-mingw64.7z        ×
-zinpass-server-v1.0.0-windows-aarch64-msvc.7z           ×
+zinpass-server-v1.0.0-20250924.1-windows-x86_64-mingw64.7z         √
+zinpass-server-v1.0.0-20250924.1-windows-x86_64-msvc.7z            -
+zinpass-server-v1.0.0-20250924.1-windows-aarch64-mingw64.7z        ×
+zinpass-server-v1.0.0-20250924.1-windows-aarch64-msvc.7z           ×
 
 2. 桌面客户端
-zinpass-client-v1.0.0-linux-x86_64-gcc.tar.xz           √
-zinpass-client-v1.0.0-linux-x86_64-clang.tar.xz         -
+zinpass-client-v1.0.0-20250924.1-linux-x86_64-gcc.tar.xz           √
+zinpass-client-v1.0.0-20250924.1-linux-x86_64-clang.tar.xz         -
 
-zinpass-client-v1.0.0-windows-x86_64-mingw64.7z         √
-zinpass-client-v1.0.0-windows-x86_64-msvc.7z            -
+zinpass-client-v1.0.0-20250924.1-windows-x86_64-mingw64.7z         √
+zinpass-client-v1.0.0-20250924.1-windows-x86_64-msvc.7z            -
 
 * √ 表示提供预构建包，- 表示未来可能提供预构建包，× 表示没有计划提供适配
 ```

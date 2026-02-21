@@ -320,7 +320,7 @@ std::vector<std::string> AccountDAO::list_id(const std::string& sys_user_id) con
     return data_list;
 }
 
-// __attribute__((optimize("O0")))     // 禁用优化
+// __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::add(const models::Account& account) const {
     DaoStatus status;
     sqlite3* conn = pool_.get_connection();
@@ -684,7 +684,7 @@ DaoStatus AccountDAO::update_password(const std::string& id,
 /**
  * @brief 修改Account表中的平台信息（1/4）
  */
-__attribute__((optimize("O0"))) // 禁用优化
+// __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::update_platform(
     const std::string& id,
     const std::string& provider_name,
@@ -735,7 +735,7 @@ DaoStatus AccountDAO::update_platform(
 /**
  * @brief 修改Account表中的账号信息（2/4）
  */
-__attribute__((optimize("O0"))) // 禁用优化
+// __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::update_user(
     const std::string& id,
     const std::string& username,
@@ -797,7 +797,7 @@ DaoStatus AccountDAO::update_user(
 /**
  * @brief 修改Account表中的第三方绑定账号信息（3/4）
  */
-__attribute__((optimize("O0"))) // 禁用优化
+// __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::update_third(
     const std::string& id,
     const int phone_id,
@@ -841,7 +841,7 @@ DaoStatus AccountDAO::update_third(
 /**
  * @brief 修改Account表中的其他信息（4/4）
  */
-__attribute__((optimize("O0"))) // 禁用优化
+// __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::update_other(
     const std::string& id,
     const std::string& sub_account,

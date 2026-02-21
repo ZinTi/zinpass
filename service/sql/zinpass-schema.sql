@@ -2,6 +2,16 @@
 PRAGMA foreign_keys= ON;       -- 每次连接数据库后执行
 BEGIN TRANSACTION;
 
+CREATE TABLE IF NOT EXISTS app_metadata
+(
+    version TEXT NOT NULL,                -- 当前数据库模式版本 (e.g., '0.0.2')
+    compatible_min_version TEXT NOT NULL, -- 最低兼容的软件版本 (e.g., '0.0.1')
+    created_at TEXT NOT NULL,             -- 数据库创建时间 (e.g., '2023-10-27 09:30:00')
+    last_updated_at TEXT,                 -- 最后升级时间 (e.g., '2023-11-15 14:20:00')
+    app_name TEXT,                        -- 应用名称 (e.g., 'MyEditor')
+    description TEXT,                     -- 描述 (e.g., 'Added file revision history table')
+);
+
 CREATE TABLE system_user
 (
     id              VARCHAR(36) NOT NULL PRIMARY KEY,   -- 主键 UUID

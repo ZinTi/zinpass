@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QClipboard>
 #include <QProcess>
+#include <QStandardPaths>
 #include "business/pwd_generator.h"
 #include "common/toast.h"
 #include "common/font_util.h"

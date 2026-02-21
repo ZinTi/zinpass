@@ -20,8 +20,10 @@ void init();    // 初始化
 [[noreturn]] void periodic_task_worker();  // 定时线程
 
 #ifdef _WIN32
-#include <winsock2.h>
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 int WINAPI WinMain(
     HINSTANCE hInstance,
     HINSTANCE hPrevInstance,

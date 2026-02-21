@@ -10,7 +10,7 @@
 
 #define PROJECT_VERSION     "0.0.1"
 #define PROJECT_LICENSE     "GPLv3"
-#define PROJECT_YEARS       "2025"
+#define PROJECT_YEARS       "2025-2026"
 #define PROJECT_AUTHOR      "Mr. ZENG Lai (Zin)"
 #define PROJECT_EMAIL       "vip201@126.com"
 

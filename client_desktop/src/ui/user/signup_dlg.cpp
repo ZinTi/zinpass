@@ -90,8 +90,8 @@ void SignupDlg::setup_ui() {
     lyt_main_->addStretch();
     lyt_main_->addLayout(lyt_btn_);
 
-    connect(btn_clear_, QPushButton::clicked, this, SignupDlg::on_btn_clear_clicked);
-    connect(btn_submit_, QPushButton::clicked, this, SignupDlg::on_btn_submit_clicked);
+    connect(btn_clear_, &QPushButton::clicked, this, &SignupDlg::on_btn_clear_clicked);
+    connect(btn_submit_, &QPushButton::clicked, this, &SignupDlg::on_btn_submit_clicked);
 }
 
 void SignupDlg::on_btn_submit_clicked() {

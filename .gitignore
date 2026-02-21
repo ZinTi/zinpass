@@ -7,6 +7,9 @@
 
 # 忽略所有目录
 build/
+target/
+install/
+third_party/
 auto_generated/
 
 # 忽略以下测试文件
@@ -21,12 +24,18 @@ data/test.db.backup
 *.tmp
 *.exe
 *.dll
+*.dll.a
 *.so
 *.a
 *.lib
 *.tar.gz
+*.tar.xz
+*.tar.bz2
+*.tgz
+*.txz
 *.zip
 *.7z
+*.rar
 *.db
 
 # 编辑器/IDE 文件

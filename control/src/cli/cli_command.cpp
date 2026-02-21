@@ -11,9 +11,9 @@ namespace zinpass::cli{
 
 void CliCommand::clear(){
 #ifdef _WIN32
-    std::system("cls");      // Windows 使用 cls
+    [[maybe_unused]] int result = std::system("cls");      // Windows 使用 cls
 #else
-    std::system("clear");    // Linux/Mac 使用 clear
+    [[maybe_unused]] int result = std::system("clear");    // Linux/Mac 使用 clear
 #endif
 }
 

@@ -67,7 +67,7 @@ void LoginDlg::setup_ui() {
     btn_signup_ = new QPushButton("注册", this);
     btn_signup_->setMaximumWidth(100);
 
-    l_copyleft_ = new QLabel("Copyleft 🄯 2025 曾来. GPLv3协议.", this);
+    l_copyleft_ = new QLabel("Copyleft 🄯 2025-2026 曾来. GPLv3协议.", this);
     l_copyleft_->setFont(font_common);
     l_copyleft_->setAlignment(Qt::AlignCenter);
 

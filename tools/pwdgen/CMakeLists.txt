@@ -11,18 +11,18 @@ set(OPTIMIZATION_FLAGS "-Os -Wall -Wextra")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${OPTIMIZATION_FLAGS}")
 
 # 添加可执行文件
-add_executable(pwdgen
+add_executable(${PROJECT_NAME}
     src/pwdgen.c
     src/color.c
 )
 
 # 设置包含路径
-target_include_directories(pwdgen
+target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/inc
 )
 
-# 安装规则
-install(TARGETS pwdgen
-    RUNTIME DESTINATION bin
+# 配置安装规则
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION "client/bin"
 )

@@ -12,12 +12,18 @@ add_definitions(-DZINPASS_VERSION="${ZINPASS_VERSION}")
 # 下载并构建第三方库源代码
 include(FetchContent)
 
-FetchContent_Declare(
-  yaml-cpp
-  GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-  GIT_TAG yaml-cpp-0.9.0 # Can be a tag (yaml-cpp-x.x.x), a commit hash, or a branch name (master)
-)
-FetchContent_MakeAvailable(yaml-cpp)
+option(USE_GITHUB_YAMLCPP "是否使用GITHUB的YAMLCPP" ON)
+
+if(USE_GITHUB_YAMLCPP)
+    FetchContent_Declare(
+    yaml-cpp
+    GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
+    GIT_TAG yaml-cpp-0.9.0 # Can be a tag (yaml-cpp-x.x.x), a commit hash, or a branch name (master)
+    )
+    FetchContent_MakeAvailable(yaml-cpp)
+else()
+    find_package(yaml-cpp REQUIRED)
+endif()
 
 # 3. 定义输出目录
 # 使用UTC时间

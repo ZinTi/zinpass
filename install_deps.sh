@@ -22,14 +22,14 @@ if [ "${os_name}" == "ubuntu-latest" ] && [ "${c_compiler}" == "gcc" ]; then
   curl -L --retry 3 -O https://github.com/ZinTi/cpp-prebuilt-libs/releases/download/grpc/grpc-v1.76.0-20251125-linux-x86_64-gcc.tar.xz
   curl -L --retry 3 -O https://github.com/ZinTi/cpp-prebuilt-libs/releases/download/yaml-cpp/yaml-cpp-v0.9.0-20260226-linux-x86_64-gcc.tar.xz
   curl -L --retry 3 -O https://github.com/ZinTi/cpp-prebuilt-libs/releases/download/boost/boost-v1.90.0-20260226-linux-x86_64-gcc.tar.xz
-  curl -L --retry 3 -O https://github.com/ZinTi/cpp-prebuilt-libs/releases/download/qt/qt-release-6.10.0-20251024-linux-x86_64-gcc.tar.xz
+  curl -L --retry 3 -O https://github.com/ZinTi/cpp-prebuilt-libs/releases/download/qt/qt-release-6.10.2-20260304-linux-x86_64-gcc.tar.xz
 
   tar -xf sqlite-v3.50.4-20251021-linux-x86_64-gcc.tar.xz -C "${workspace_dir}/third_party/"
   tar -xf openssl-v3.5.4-20251021-linux-x86_64-gcc.tar.xz -C "${workspace_dir}/third_party/"
   tar -xf grpc-v1.76.0-20251125-linux-x86_64-gcc.tar.xz -C "${workspace_dir}/third_party/"
   tar -xf yaml-cpp-v0.9.0-20260226-linux-x86_64-gcc.tar.xz -C "${workspace_dir}/third_party/"
   tar -xf boost-v1.90.0-20260226-linux-x86_64-gcc.tar.xz -C "${workspace_dir}/third_party/"
-  tar -xf qt-release-6.10.0-20251024-linux-x86_64-gcc.tar.xz -C "${workspace_dir}/third_party/"
+  tar -xf qt-release-6.10.2-20260304-linux-x86_64-gcc.tar.xz -C "${workspace_dir}/third_party/"
 
 elif [ "${os_name}" == "ubuntu-latest" ] && [ "${c_compiler}" == "clang" ]; then
   curl -L --retry 3 -O https://github.com/ZinTi/cpp-prebuilt-libs/releases/download/sqlite/sqlite-v3.50.4-20251021-linux-x86_64-clang.tar.xz
@@ -112,6 +112,7 @@ if [ "${os_name}" == "ubuntu-latest" ]; then
       libpng-dev \
       libpulse-dev \
       libssl-dev \
+      libsystemd-dev \
       libtiff-dev \
       libudev-dev \
       libx11-dev \

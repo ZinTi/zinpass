@@ -24,7 +24,8 @@ cmake -B "build" \
     -DCMAKE_TOOLCHAIN_FILE="cmake/toolchain.cmake" \
     -DBUILD_SERVICE=ON \
     -DBUILD_CONTROL=ON \
-    -DBUILD_CLIENT_DESKTOP=OFF
+    -DBUILD_CLIENT_DESKTOP=OFF \
+    -DUSE_GITHUB_YAMLCPP=OFF
 
 # 3. Build And Install
 cmake --build "build" --target install --parallel 2

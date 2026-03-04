@@ -14,7 +14,8 @@ cmake -B "build" `
     -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl `
     -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=17 `
     -DCMAKE_TOOLCHAIN_FILE="cmake/toolchain.cmake" `
-    -A "x64"
+    -A "x64" `
+    -DBUILD_CLIENT_DESKTOP=OFF
 
 # 3. Build and install
 cmake --build "build" --target install --config Release --parallel 2

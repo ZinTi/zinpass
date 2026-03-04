@@ -65,48 +65,10 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 
-# 添加对OpenGL和X11的查找（Linux平台）
+# 对OpenGL和X11的查找（Linux平台）
 if(UNIX AND NOT APPLE)  # Linux平台
-    # 尝试查找静态OpenGL库
-    find_library(GL_STATIC_LIB NAMES libGL.a GL PATHS
-        /usr/lib/x86_64-linux-gnu
-        /usr/lib
-        /usr/local/lib
-        NO_DEFAULT_PATH
-    )
-    
-    # 尝试查找静态X11库
-    find_library(X11_STATIC_LIB NAMES libX11.a X11 PATHS
-        /usr/lib/x86_64-linux-gnu
-        /usr/lib
-        /usr/local/lib
-        NO_DEFAULT_PATH
-    )
-    
-    # 如果找不到静态库，查找动态库
-    if(NOT GL_STATIC_LIB)
-        find_package(OpenGL QUIET)
-        if(OpenGL_FOUND)
-            set(GL_LIBRARIES ${OPENGL_LIBRARIES})
-        else()
-            find_library(GL_DYNAMIC_LIB NAMES GL)
-            set(GL_LIBRARIES ${GL_DYNAMIC_LIB})
-        endif()
-    else()
-        set(GL_LIBRARIES ${GL_STATIC_LIB})
-    endif()
-    
-    if(NOT X11_STATIC_LIB)
-        find_package(X11 QUIET)
-        if(X11_FOUND)
-            set(X11_LIBRARIES ${X11_LIBRARIES})
-        else()
-            find_library(X11_DYNAMIC_LIB NAMES X11)
-            set(X11_LIBRARIES ${X11_DYNAMIC_LIB})
-        endif()
-    else()
-        set(X11_LIBRARIES ${X11_STATIC_LIB})
-    endif()
+    find_package(OpenGL REQUIRED)
+    find_package(X11 REQUIRED)
 endif()
 
 # 包含头文件目录
@@ -251,11 +213,59 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         $<$<PLATFORM_ID:Windows>:crypt32>
 )
 
-# Linux专用库（放在单独的target_link_libraries调用中）
-if(UNIX AND NOT APPLE AND GL_LIBRARIES AND X11_LIBRARIES)
+# Linux专用库
+if(UNIX AND NOT APPLE)
+    # 使用 pkg-config 简化依赖管理
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GLIB2 glib-2.0 REQUIRED)
+    pkg_check_modules(GIO2 gio-2.0 REQUIRED)
+    pkg_check_modules(GIO_UNIX gio-unix-2.0 REQUIRED)
+    pkg_check_modules(XCB xcb REQUIRED)
+    pkg_check_modules(X11_XCB x11-xcb REQUIRED)
+    pkg_check_modules(SYSTEMD libsystemd REQUIRED)
+    
+    # 添加 Qt 静态库所依赖的其他缺失的库
+    # 注意：静态链接时顺序很重要，依赖的库放在后面
     target_link_libraries(${PROJECT_NAME} PRIVATE
-        ${GL_LIBRARIES}
-        ${X11_LIBRARIES}
+        OpenGL::GL
+        X11::X11
+        ${XCB_LIBRARIES}
+        ${X11_XCB_LIBRARIES}
+        ${GLIB2_LIBRARIES}
+        ${GIO2_LIBRARIES}
+        ${GIO_UNIX_LIBRARIES}
+        ${SYSTEMD_LIBRARIES}
+
+        # 将所有有依赖关系的库放在 --start-group 和 --end-group 之间
+        -Wl,--start-group
+        -lgio-2.0
+        -lgmodule-2.0
+        -lgobject-2.0
+        -lglib-2.0
+        -lffi
+        -lpcre2-8
+        -lX11-xcb
+        -lxcb
+        -lXau
+        -lXdmcp
+        -lsystemd
+        -lmount
+        -lselinux
+        -ldbus-1
+        -Wl,--end-group
+
+        -pthread
+        -ldl
+        -lm
+        -lrt
+    )
+    
+    # 添加包含目录
+    target_include_directories(${PROJECT_NAME} PRIVATE
+        ${GLIB2_INCLUDE_DIRS}
+        ${GIO2_INCLUDE_DIRS}
+        ${XCB_INCLUDE_DIRS}
+        ${SYSTEMD_INCLUDE_DIRS}
     )
 endif()
 
@@ -289,10 +299,8 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
             -Wl,--gc-sections
             # 使用链接器选项移除对不需要库的引用
             -Wl,--as-needed
-            # 排除 QtPdf 静态库，避免其附带的.rsp文件被引用
-            -Wl,--exclude-libs,libQt6Pdf.a
             # 尝试先静态链接，如果失败则动态链接
-            -Wl,-Bstatic -lGL -Wl,-Bdynamic
+            # -Wl,-Bstatic -lGL -Wl,-Bdynamic
     )
 
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -304,10 +312,8 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
             -Wl,--gc-sections
             # 使用链接器选项移除对不需要库的引用
             -Wl,--as-needed
-            # 排除 QtPdf 静态库，避免其附带的.rsp文件被引用
-            -Wl,--exclude-libs,libQt6Pdf.a
             # 尝试先静态链接，如果失败则动态链接
-            -Wl,-Bstatic -lGL -Wl,-Bdynamic
+            # -Wl,-Bstatic -lGL -Wl,-Bdynamic
     )
 endif()
 
@@ -333,6 +339,17 @@ install(TARGETS ${PROJECT_NAME}
         RESOURCE DESTINATION "${CLIENT_INSTALL_DIR}/resources"         # 资源文件
 )
 
+# 安装复制 shared libraries 脚本
+install(PROGRAMS "scripts/copy_shared_lib.sh" DESTINATION "${CLIENT_INSTALL_DIR}/bin" )
+
 # 安装客户端的配置文件
 install(FILES "config/client_config.example.yml" DESTINATION "${CLIENT_INSTALL_DIR}/bin")
 
+# # 切换到安装好的目录 "${CLIENT_INSTALL_DIR}/bin" 下执行脚本 "./copy_shared_lib.sh"
+# install(CODE [[
+#     # 在目标目录执行脚本
+#     execute_process(
+#         COMMAND ./copy_shared_lib.sh
+#         WORKING_DIRECTORY "${CLIENT_INSTALL_DIR}/bin" 
+#     )
+# ]])

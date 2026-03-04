@@ -69,7 +69,7 @@ ClientConfig::ClientConfig() {
         std::filesystem::path grandparent = zinpass::utils::get_executable_grandparent_dir();
         log_path_ = (grandparent / "data/client.log").string();
     } catch (const std::exception& e) {
-        // QMessageBox::critical(nullptr, "错误", QString("配置文件读取失败: %1").arg(e.what()));
+        // QMessageBox::critical(nullptr, "错误", QString("配置文件读取失败: %1").arg(QString::fromStdString(e.what()));
         exit(1);
     }
 }

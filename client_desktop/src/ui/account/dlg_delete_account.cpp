@@ -31,10 +31,10 @@ void DialogDeleteAccount::on_btn_confirm_clicked(){
     const auto[result, message_remove] = account_rpc.remove_account(session_id, this->account_id_, this->main_key_);
 
     if (result) {
-        Toast::showToast(this, QString::fromStdString("删除成功: %1").arg(message_remove), 3000,QColor(200, 0, 200, 220), Qt::white);
+        Toast::showToast(this, QString::fromStdString("删除成功: %1").arg(QString::fromStdString(message_remove)), 3000,QColor(200, 0, 200, 220), Qt::white);
         accept();  // 删除成功，关闭对话框并返回Accepted
     } else {  // 操作失败时保持对话框打开
-        Toast::showToast(this, QString::fromStdString("删除失败: %2").arg(message_remove), 3000,QColor(200, 0, 200, 220), Qt::white);
+        Toast::showToast(this, QString::fromStdString("删除失败: %2").arg(QString::fromStdString(message_remove)), 3000,QColor(200, 0, 200, 220), Qt::white);
     }
     emit remove_result(result); // 发送结果信号
 }

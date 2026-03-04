@@ -119,7 +119,7 @@ void PhoneMgrForm::list_phones(){
         this->column_of_table_view_ = 0;
         this->display_->setTextColor(QColor::fromRgbF(0, 100, 255, 1.0));
         QModelIndex index = table_model_->index(this->row_of_table_view_, 0);
-        this->display_->setText(QString::fromStdString("查询到 %1 条手机号记录\n").arg(std::to_string(num_rows)));
+        this->display_->setText(QString::fromStdString("查询到 %1 条手机号记录\n").arg(QString::fromStdString(std::to_string(num_rows))));
         this->display_->append(QString("默认选中ID: %1").arg(table_model_->data(index).toString()));
     }
 }

@@ -218,7 +218,7 @@ void DialogEditAccount::read_only(const bool enable) const {
 
 void DialogEditAccount::on_btn_read_passwd_clicked() const {
     DialogExposedPwd dlg_exposed_pwd(this->account_id_);
-    dlg_exposed_pwd.setWindowTitle(QString("查看密码(%1)").arg(this->account_id_));
+    dlg_exposed_pwd.setWindowTitle(QString("查看密码(%1)").arg(QString::fromStdString(this->account_id_)));
     dlg_exposed_pwd.exec();
 }
 

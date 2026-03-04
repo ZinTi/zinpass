@@ -42,25 +42,20 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-#file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/qt/ui) # 创建 ui_*.h 生成目录
-#set(CMAKE_AUTOUIC_OPTIONS "-o ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/qt/ui") # 全局设置uic输出目录
-
-# 在 find_package 前强制设置静态库查找顺序
-if(MINGW)
-    # MinGW 下，设置 .a 优先于 .dll.a
-    set(CMAKE_FIND_LIBRARY_SUFFIXES .a .dll.a .so .lib .dylib)
-elseif(WIN32 AND MSVC)
-    # MSVC 下，.lib 优先于 .dll.lib
-    set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .dll.lib .a .so .dylib)
-else()
-    # Linux/Unix 下，.a 优先于 .so/.dylib
-    set(CMAKE_FIND_LIBRARY_SUFFIXES .a .so .dylib .lib)
+# 在 find_package 前强制设置静态库查找顺序 （仅在Windows平台下设置静态库查找顺序）
+if(WIN32)
+    if(MINGW)
+        # MinGW 下，设置 .a 优先于 .dll.a
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .a .dll.a .so .lib .dylib)
+    elseif(MSVC)
+        # MSVC 下，.lib 优先于 .dll.lib
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .dll.lib .a .so .dylib)
+    endif()
 endif()
 
 # 查找 Qt、Protobuf、 gRPC
 set(QT_NO_PRIVATE_MODULE_WARNING ON)  # 抑制私有模块警告
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
-# find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
@@ -77,10 +72,8 @@ include_directories(
         ${SQLite3_INCLUDE_DIR} # 添加 SQLite3 头文件路径
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
-
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated
         ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/grpc
-        # ${CMAKE_CURRENT_SOURCE_DIR}/auto_generated/qt/ui
 )
 
 set(PROJECT_SOURCES
@@ -215,57 +208,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 # Linux专用库
 if(UNIX AND NOT APPLE)
-    # 使用 pkg-config 简化依赖管理
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(GLIB2 glib-2.0 REQUIRED)
-    pkg_check_modules(GIO2 gio-2.0 REQUIRED)
-    pkg_check_modules(GIO_UNIX gio-unix-2.0 REQUIRED)
-    pkg_check_modules(XCB xcb REQUIRED)
-    pkg_check_modules(X11_XCB x11-xcb REQUIRED)
-    pkg_check_modules(SYSTEMD libsystemd REQUIRED)
-    
-    # 添加 Qt 静态库所依赖的其他缺失的库
-    # 注意：静态链接时顺序很重要，依赖的库放在后面
     target_link_libraries(${PROJECT_NAME} PRIVATE
         OpenGL::GL
         X11::X11
-        ${XCB_LIBRARIES}
-        ${X11_XCB_LIBRARIES}
-        ${GLIB2_LIBRARIES}
-        ${GIO2_LIBRARIES}
-        ${GIO_UNIX_LIBRARIES}
-        ${SYSTEMD_LIBRARIES}
-
-        # 将所有有依赖关系的库放在 --start-group 和 --end-group 之间
-        -Wl,--start-group
-        -lgio-2.0
-        -lgmodule-2.0
-        -lgobject-2.0
-        -lglib-2.0
-        -lffi
-        -lpcre2-8
-        -lX11-xcb
-        -lxcb
-        -lXau
-        -lXdmcp
-        -lsystemd
-        -lmount
-        -lselinux
-        -ldbus-1
-        -Wl,--end-group
-
-        -pthread
-        -ldl
-        -lm
-        -lrt
-    )
-    
-    # 添加包含目录
-    target_include_directories(${PROJECT_NAME} PRIVATE
-        ${GLIB2_INCLUDE_DIRS}
-        ${GIO2_INCLUDE_DIRS}
-        ${XCB_INCLUDE_DIRS}
-        ${SYSTEMD_INCLUDE_DIRS}
     )
 endif()
 
@@ -291,29 +236,12 @@ elseif(MINGW)
             -Wl,--gc-sections
     )
 
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    # Linux下：不要使用-static，避免静态链接动态库
-    # 但可以尝试使用-Wl,-Bstatic和-Wl,-Bdynamic来控制链接方式
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # Linux下：使用动态链接，只优化不静态链接
     target_link_options(${PROJECT_NAME} PRIVATE
             -s
             -Wl,--gc-sections
-            # 使用链接器选项移除对不需要库的引用
             -Wl,--as-needed
-            # 尝试先静态链接，如果失败则动态链接
-            # -Wl,-Bstatic -lGL -Wl,-Bdynamic
-    )
-
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    # Linux下：不要使用-static，避免静态链接动态库
-    # 但可以尝试使用-Wl,-Bstatic和-Wl,-Bdynamic来控制链接方式
-    # Clang: 使用相应的小体积选项
-    target_link_options(${PROJECT_NAME} PRIVATE
-            -s
-            -Wl,--gc-sections
-            # 使用链接器选项移除对不需要库的引用
-            -Wl,--as-needed
-            # 尝试先静态链接，如果失败则动态链接
-            # -Wl,-Bstatic -lGL -Wl,-Bdynamic
     )
 endif()
 
@@ -324,11 +252,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
             $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-O2>
     )
 endif()
-
-# 静态编译专用配置
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-        QT_STATICPLUGIN  # 启用静态插件支持
-)
 
 # 配置安装规则（安装客户端到 <prefix>/${CLIENT_INSTALL_DIR}/ 目录下）
 install(TARGETS ${PROJECT_NAME}

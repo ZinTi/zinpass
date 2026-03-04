@@ -210,7 +210,7 @@ void AccountMgrForm::on_btn_read_passwd_clicked() {
             const std::string account_id = data.toString().toStdString();
 
             DialogExposedPwd dlg_exposed_pwd(account_id, this);
-            dlg_exposed_pwd.setWindowTitle(QString("查看密码(%1)").arg(account_id));
+            dlg_exposed_pwd.setWindowTitle(QString("查看密码(%1)").arg(QString::fromStdString(account_id)));
             dlg_exposed_pwd.exec();
         }
     } else {
@@ -232,7 +232,7 @@ void AccountMgrForm::on_btn_detail_and_edit_clicked() const {
             const QVariant data = item_column0->data(Qt::DisplayRole);
             const std::string account_id = data.toString().toStdString();
             dlg_edit_acc_->set_account_id(account_id);
-            dlg_edit_acc_->setWindowTitle(QString("详情与编辑(%1)").arg(account_id));
+            dlg_edit_acc_->setWindowTitle(QString("详情与编辑(%1)").arg(QString::fromStdString(account_id)));
             dlg_edit_acc_->setContentsMargins(12,10,12,10);
             dlg_edit_acc_->show();
         }

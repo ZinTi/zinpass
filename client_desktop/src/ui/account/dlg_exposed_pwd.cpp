@@ -90,12 +90,12 @@ void DialogExposedPwd::on_btn_read_clicked() {
 
     if(plaintext_password.empty()){
         edit_display_->setTextColor(QColor::fromRgb(255, 0, 0));
-        edit_display_->append(QString("[响应] %1").arg(message));
+        edit_display_->append(QString("[响应] %1").arg(QString::fromStdString(message)));
         edit_display_->append(QString("[密码] (空)"));
     }else{
         edit_display_->setTextColor(QColor::fromRgb(0, 255, 0));
-        edit_display_->append(QString("[响应] %1").arg(message));
-        edit_display_->append(QString("[密码] %1").arg(plaintext_password));
+        edit_display_->append(QString("[响应] %1").arg(QString::fromStdString(message)));
+        edit_display_->append(QString("[密码] %1").arg(QString::fromStdString(plaintext_password)));
 
         start_btn_countdown(btn_read_);   // 成功获取到密码则开始倒计时
     }
@@ -120,11 +120,11 @@ void DialogExposedPwd::on_btn_copy_clicked() const {
 
     if(plaintext_password.empty()){
         edit_display_->setTextColor(QColor::fromRgb(255, 0, 0));
-        edit_display_->append(QString("[响应] %1").arg(message));
+        edit_display_->append(QString("[响应] %1").arg(QString::fromStdString(message)));
         edit_display_->append(QString("[复制] 未复制"));
     }else{
         edit_display_->setTextColor(QColor::fromRgb(0, 255, 0));
-        edit_display_->append(QString("[响应] %1").arg(message));
+        edit_display_->append(QString("[响应] %1").arg(QString::fromStdString(message)));
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(QString::fromStdString(plaintext_password));
         edit_display_->append(QString("[复制] 已复制到剪贴板"));
@@ -150,13 +150,13 @@ void DialogExposedPwd::on_btn_read_and_copy_clicked(){
 
     if(plaintext_password.empty()){
         edit_display_->setTextColor(QColor::fromRgb(255, 0, 0));
-        edit_display_->append(QString("[响应] %1").arg(message));
+        edit_display_->append(QString("[响应] %1").arg(QString::fromStdString(message)));
         edit_display_->append(QString("[密码] (空)"));
         edit_display_->append(QString("[复制] 未复制"));
     }else{
         edit_display_->setTextColor(QColor::fromRgb(0, 255, 0));
-        edit_display_->append(QString("[响应] %1").arg(message));
-        edit_display_->append(QString("[密码] %1").arg(plaintext_password));
+        edit_display_->append(QString("[响应] %1").arg(QString::fromStdString(message)));
+        edit_display_->append(QString("[密码] %1").arg(QString::fromStdString(plaintext_password)));
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(QString::fromStdString(plaintext_password));
         edit_display_->append(QString("[复制] 已复制到剪贴板"));

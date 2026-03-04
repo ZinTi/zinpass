@@ -175,8 +175,8 @@ void PhoneDetailFrame::render_phone_to_ui() const {
         "[创建于] %1\n"
         "[更新于] %2\n"
         )
-        .arg(this->phone_->getCreatedTime())
-        .arg(this->phone_->getUpdatedTime());
+        .arg(QString::fromStdString(this->phone_->getCreatedTime()))
+        .arg(QString::fromStdString(this->phone_->getUpdatedTime()));
 
     edit_other_->setText(other_info);
 
@@ -239,9 +239,9 @@ void PhoneDetailFrame::on_btn_submit_clicked(){
         in_postscript.toStdString()
         );
     if(result){
-        QMessageBox::information(this, QString("完成"), QString("更新成功! %1").arg(message));
+        QMessageBox::information(this, QString("完成"), QString("更新成功! %1").arg(QString::fromStdString(message)));
     }else{
-        QMessageBox::warning(this, QString("失败"), QString("更新失败! %1").arg(message));
+        QMessageBox::warning(this, QString("失败"), QString("更新失败! %1").arg(QString::fromStdString(message)));
     }
 }
 

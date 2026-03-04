@@ -126,8 +126,8 @@ void DialogAddPhone::on_btn_submit_clicked(){
         in_postscript.toStdString());
 
     if(result){
-        QMessageBox::information(this,QString("成功"), QString("新增成功: %1").arg(message_phone));
+        QMessageBox::information(this,QString("成功"), QString("新增成功: %1").arg(QString::fromStdString(message_phone)));
     }else{
-        QMessageBox::information(this,QString("失败"), QString("新增失败: %1").arg(message_phone));
+        QMessageBox::information(this,QString("失败"), QString("新增失败: %1").arg(QString::fromStdString(message_phone)));
     }
 }

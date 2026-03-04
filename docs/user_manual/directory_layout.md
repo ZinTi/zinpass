@@ -22,22 +22,22 @@
 # 例如
 
 1. 服务端
-zinpass-server-v1.0.0-20250924.1-linux-x86_64-gcc.tar.xz           √
-zinpass-server-v1.0.0-20250924.1-linux-x86_64-clang.tar.xz         -
-zinpass-server-v1.0.0-20250924.1-linux-aarch64-gcc.tar.xz          ×
-zinpass-server-v1.0.0-20250924.1-linux-aarch64-clang.tar.xz        ×
+zinpass-server-v1.0.0-UTC-linux-x86_64-gcc.tar.xz           √
+zinpass-server-v1.0.0-UTC-linux-x86_64-clang.tar.xz         -
+zinpass-server-v1.0.0-UTC-linux-aarch64-gcc.tar.xz          ×
+zinpass-server-v1.0.0-UTC-linux-aarch64-clang.tar.xz        ×
 
-zinpass-server-v1.0.0-20250924.1-windows-x86_64-mingw64.7z         √
-zinpass-server-v1.0.0-20250924.1-windows-x86_64-msvc.7z            -
-zinpass-server-v1.0.0-20250924.1-windows-aarch64-mingw64.7z        ×
-zinpass-server-v1.0.0-20250924.1-windows-aarch64-msvc.7z           ×
+zinpass-server-v1.0.0-UTC-windows-x86_64-mingw64.7z         √
+zinpass-server-v1.0.0-UTC-windows-x86_64-msvc.7z            -
+zinpass-server-v1.0.0-UTC-windows-aarch64-mingw64.7z        ×
+zinpass-server-v1.0.0-UTC-windows-aarch64-msvc.7z           ×
 
 2. 桌面客户端
-zinpass-client-v1.0.0-20250924.1-linux-x86_64-gcc.tar.xz           √
-zinpass-client-v1.0.0-20250924.1-linux-x86_64-clang.tar.xz         -
+zinpass-client-v1.0.0-UTC-linux-x86_64-gcc.tar.xz           √
+zinpass-client-v1.0.0-UTC-linux-x86_64-clang.tar.xz         -
 
-zinpass-client-v1.0.0-20250924.1-windows-x86_64-mingw64.7z         √
-zinpass-client-v1.0.0-20250924.1-windows-x86_64-msvc.7z            -
+zinpass-client-v1.0.0-UTC-windows-x86_64-mingw64.7z         √
+zinpass-client-v1.0.0-UTC-windows-x86_64-msvc.7z            -
 
 * √ 表示提供预构建包，- 表示未来可能提供预构建包，× 表示没有计划提供适配
 ```
@@ -53,8 +53,8 @@ GNU/Linux 部署
 │   ├─ service_config.yml # Configuration
 │   └─ ...
 │
-└─ data/
-    ├─ zinpassd.log        # Log file
+└─ data/                          # chmod 666 ./*
+    ├─ zinpassd.log       # Log file
     ├─ zinpass.db         # Database file
     └─ ...
 ```

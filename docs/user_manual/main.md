@@ -63,6 +63,10 @@
 </figure>
 
 ## 其他
-无。
+
+<figure style="text-align: center;">
+  <img src="../images/client-linux.png" alt="client-linux.png" width="320" />
+  <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-6 Linux版客户端界面</figcaption>
+</figure>
 
 ***

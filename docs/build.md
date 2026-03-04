@@ -27,43 +27,29 @@
 
 > 以下环境为笔者开发和测试时使用的版本
 
-***Windows***
-- CMake: cmake version 3.31.0
-- MinGW-w64:
-    - gcc.exe (x86_64-posix-seh-rev2, Built by MinGW-Builds project) 14.2.0
-    - g++.exe (x86_64-posix-seh-rev2, Built by MinGW-Builds project) 14.2.0
-    - GNU Make 4.4.1 Built for x86_64-w64-mingw32
-- Ninja: 1.12.1
-- gRPC:
-    - protoc: libprotoc 29.0
-    - grpc_cpp_plugin.exe
-    - gRPC 1.71.0 (使用 mingw-w64 编译后的 Release 静态库，包含 libprotoc 29.0 )
-- Python: Python 3.13.3
-- SQLite: 3.50.0 (使用 mingw-w64 编译后的 Release 静态库)
-- OpenSSL: OpenSSL 3.5.0 8 Apr 2025 (Library: OpenSSL 3.5.0 8 Apr 2025)
-- Boost: 1.88.0
-- Qt: 6.9 (使用 mingw-w64 编译后的 Release 静态库)
-
-***GNU/Linux***
-
-### 2.2. Third-Party libraries - 第三方库
-
-
-***Windows***
-
-- Qt 6.9
-- gRPC (含 protoc 工具)
-- SQLite 3.50
-- OpenSSL 3.0.15
-- Boost
-
-***GNU/Linux***
-- Qt 
+***Windows***  
+- CMake
+- MinGW-w64
+- Ninja
 - gRPC
+    - protoc
+    - grpc_cpp_plugin
+- Python
 - SQLite
 - OpenSSL
 - Boost
+- Qt
 
+***GNU/Linux***  
+参考构建脚本。
+
+### 2.2. Third-Party libraries - 第三方库
+
+- Qt
+- gRPC (含 protoc 工具)
+- SQLite
+- OpenSSL
+- Boost
 
 ## 二、Build - 构建
 
@@ -249,6 +235,14 @@ cmake .. -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYP
 > 由于本人没有 Macintosh 电脑，笔记本搭载的 AMD CPU 难以搭建 macOS 的虚拟化开发环境，暂时也不太熟悉 GitHub Actions ，因此短时间内不会适配 macOS 
 
 ## 三、Install - 安装
+
+> 注意：若服务端安装在 `GNU/Linux` 上的`/opt/` 等非用户目录，需要确保 `server/data/*` 具有读写权限。
+
+```bash
+chmod a+rw server/data/* 
+# or
+chmod 666 server/data/*
+```
 
 ### 3.1. 部署服务端和命令行程序
 ***GNU/Linux***  

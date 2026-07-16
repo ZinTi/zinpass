@@ -1,18 +1,9 @@
 #!/bin/env bash
-
 # Build Zinpass for Linux using Clang
 
-# 1. Generate gRPC build files
-if command -v python &> /dev/null; then
-    python scripts/protoc.py "third_party/grpc" -c 111
-elif command -v python3 &> /dev/null; then
-    python3 scripts/protoc.py "third_party/grpc" -c 111
-else
-    echo "Error: Neither python nor python3 found. Please install Python." >&2
-    exit 1
-fi
+set -e
 
-# 2. Configure CMake project
+# Configure CMake project
 # cmake -B <build-dir> -G <generator-name> -S <source-dir> -DCMAKE_INSTALL_PREFIX=<install-dir> -DCMAKE_BUILD_TYPE=<type>
 cmake -B "build" \
     -G "Unix Makefiles" \
@@ -21,11 +12,12 @@ cmake -B "build" \
     -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG" \
     -DCMAKE_TOOLCHAIN_FILE="cmake/toolchain.cmake" \
-    -DBUILD_SERVICE=ON \
+    -DCMAKE_INSTALL_RPATH='$ORIGIN:$ORIGIN/../lib' \
+    -DBUILD_SERVER=ON \
     -DBUILD_CONTROL=ON \
-    -DBUILD_CLIENT_DESKTOP=OFF \
-    -DUSE_GITHUB_YAMLCPP=OFF
+    -DBUILD_CLIENT_DESKTOP=ON
 
-# 3. Build And Install
-cmake --build "build" --target install --parallel 2
+# Build And Install
+cmake --build "build" --target install --parallel 12

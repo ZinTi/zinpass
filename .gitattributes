@@ -1,0 +1,11 @@
+# ================= 1. GitHub 统计排除 =================
+third_party/** linguist-vendored
+
+# ================= 2. Release 源码包排除 =================
+third_party/           export-ignore
+tests/                 export-ignore
+benchmarks/            export-ignore
+docs/                  export-ignore
+.github/               export-ignore
+.gitlab-ci.yml         export-ignore
+.gitignore             export-ignore

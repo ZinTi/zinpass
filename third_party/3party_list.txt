@@ -1,0 +1,9 @@
+使用 Git Submodule 和直接存放源代码的混合方式处理依赖
+https://sqlite.org/2026/sqlite-amalgamation-3530300.zip
+git submodule add https://github.com/gabime/spdlog.git third_party/spdlog
+git submodule add https://github.com/jbeder/yaml-cpp.git third_party/yaml-cpp
+git submodule add https://github.com/openssl/openssl.git third_party/openssl
+git submodule add https://github.com/grpc/grpc.git third_party/grpc
+git submodule add https://github.com/boostorg/boost.git third_party/boost
+cd third_party/boost
+git submodule update --init --recursive

@@ -50,6 +50,7 @@
 - SQLite
 - OpenSSL
 - Boost
+- Spdlog
 
 ## 二、Build - 构建
 
@@ -275,7 +276,7 @@ notepad %SystemRoot%\zinpassd.bat
 ```
 
 ### 3.2. 创建配置文件
-在 `zinpassd` 或 `zinpassd.exe` 所在目录下创建文件 `service_config.yml` 并编辑
+在 `zinpassd` 或 `zinpassd.exe` 所在目录下创建文件 `server_config.yml` 并编辑
 修改其中的数据库文件路径为你的实际数据库文件完整路径
 
 ```ini
